@@ -320,6 +320,9 @@ a{
         margin-left: 2.5vw;  
     }
     */
+    #MainNavigation{
+        justify-content: center;
+    }
     #HeaderSection{
         height: auto;
         /*margin-right: 2.5vw;
@@ -327,9 +330,22 @@ a{
     }
     #HeaderUList{
         height: 6vh;
+
+        flex-direction: row;
+        align-items: center;
     }
     #HeaderList{
         padding:0px;
+    }
+    .NavText{
+        font-size: 5vw;
+    }
+    #Title{
+        font-size: 8vw;
+        justify-content: center;
+
+        padding-left: 0em;
+        padding-right: 0em;
     }
     #container{
         flex-direction: column;       
@@ -358,11 +374,12 @@ a{
     }
     #ContainerContents{
     
-        height: 10vh;
+        height: 15vh;
         min-width: 100%;
     }
     #Categories{
         margin: 0px;
+        font-size: 6vw;
     }
     .Skills{
         margin-bottom: 5%;
