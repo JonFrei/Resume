@@ -326,23 +326,36 @@ body{
 @media screen and (max-width: 800px){
 
     #body{
-        position: fixed;
+        
+        /*position: fixed;
         top: 0px;
         right: 0px;
         left: 0px;
         bottom:0px;
+        */
+        width: 100%;
     }
     #navbar{
-        max-width: 375px;
+        max-width:100%;
         justify-content: center;
     }
-    #projects{
-        font-size: 4vw;
+
+    #projects-grid{
+        gap: 20px
     }
+
+    #projects{
+        font-size: 3vw;
+    }
+
+    #projects-heading{
+        margin-top: 1.4em;
+    }
+
     .main-h3{
         margin-top: 0.8em;
         margin-bottom: 1.6em;
-        font-size: 15vw;
+        font-size: 12vw;
     }
     
 
@@ -350,10 +363,12 @@ body{
         width: 100%;
         max-height: 300px;
 
+        margin-top: 1.2em;
+
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        gap: 5px;
+        gap: 10px;
         
     }
 }
