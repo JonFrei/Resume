@@ -362,6 +362,7 @@ a{
 
         width: 80%;
     }
+    /*
     #sub_container_2{
         flex-direction: column;
     
@@ -372,9 +373,10 @@ a{
 
         width: 80%;
     }
+    */
     #ContainerContents{
     
-        height: 15vh;
+        height: 12vh;
         min-width: 100%;
     }
     #Categories{

@@ -348,11 +348,12 @@ body{
 
     #projects-grid{
         min-height: 800px;
-        gap: 20px;
-
+        
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: space-evenly;
         align-items: center;
+
+        gap: 20px;
     }
 
     #projects{
