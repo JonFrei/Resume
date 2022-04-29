@@ -29,8 +29,10 @@ body{
 }
 
 #Header{
+    /*
     border-style: solid;
     border-color: red;
+*/
 
     background-color: var(--Color5);
 
@@ -45,9 +47,10 @@ body{
 }
 
 #navigation{
+    /*
     border-style: solid;
     border-color: green;
-
+*/
     margin-right: 3vw;
 
     display: flex;
@@ -69,8 +72,10 @@ body{
 }
 
 #Container{
+    /*
     border-style: solid;
     border-color: blue;
+*/
 
     display: flex;
     flex-direction: column;
@@ -81,11 +86,15 @@ body{
 }
 
 .contents{
+    /*
     border-style: solid;
     border-color: purple;
+*/
 
     margin-top: 1em;
     margin-bottom: 1em;
+
+    width: 100%;
 }
 
 #h2-style{
@@ -132,11 +141,16 @@ body{
 }
 
 #Introduction-img{
+    /*
     border-style: solid;
     border-color: brown;
+*/
 
-    max-width: 200px;
-    max-height: 200px;
+    width: 25%;
+    max-width: 400px;
+
+    height: 25%;
+    max-height: 400px;
 
 }
 
@@ -160,8 +174,8 @@ body{
     align-items: center;
 
     background-color: var(--Color4);
-    height: auto;
-    max-height: 90%;
+    height: 90%;
+    max-height: 900px;
 
     width: 100%;
 }
@@ -174,11 +188,11 @@ body{
     justify-content: space-evenly;
     align-items:flex-start;
 
-    padding: 0em 0em 0em 3em;
+    padding: 0em 0em 0em 10%;
 
-    height: 20%;
-    max-height: 75px;
-    width: 75%;
+    height: 30%;
+    max-height: 5em;
+    width: 85%;
 }
 
 .Design-li{
@@ -187,11 +201,17 @@ body{
 }
 
 #Design-img{
+    */
     border-style: solid;
     border-color: brown;
+*/
 
-    max-width: 400px;
-    max-height: 400px;
+    /*width: 60%;*/
+    max-width: 1024px;
+    min-width: 400px;
+    height: 100%;
+    max-height: 1024px;
+    min-height: 400px;
 }
 
 #Program{
@@ -221,11 +241,16 @@ body{
 }
 
 #Program-img{
+    
     border-style: solid;
     border-color: brown;
 
+    /*width: 60%;*/
+    max-width: 1024px;
     min-width: 400px;
-    min-height: 400px;    
+    height: 100%;
+    max-height: 1024px;
+    min-height: 400px;
 }
 
 #Controls{
@@ -247,19 +272,25 @@ body{
 }
 
 #Controls-img{
+    
     border-style: solid;
     border-color: brown;
 
+    /*width: 60%;*/
+    max-width: 1024px;
     min-width: 400px;
-    min-height: 400px;    
+    height: 100%;
+    max-height: 1024px;
+    min-height: 400px;  
 }
 
 
 
 #Footer{
+    /*
     border-style: solid;
     border-color: green;  
-
+*/
     background: linear-gradient(180deg, var(--Color5) 0%, var(--Color6) 150%);
 
     height: 100vh;
