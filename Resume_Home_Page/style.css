@@ -6,7 +6,7 @@
     --Color4: #86A873; /*Asparagus*/
     --Color5: #BB9F06; /*Lemon Curry*/
     --Color6: #D18804;
-    --MainBorderWidth: 1.2em;
+    --MainBorderWidth: 5px;
     --MainBorderRadius: 0vw;
     --MainMargin: 5vw;
     --MainWidth: 90vw;
@@ -325,7 +325,7 @@ a{
     }
 
     #SurroudingBox{
-        border-width: 1.05em;
+        border-width: 5px;
     }
     #HeaderSection{
         height: auto;
@@ -398,7 +398,7 @@ a{
         height: 12vh;
         min-width: 100%;
 
-        border-width: 1.05em;
+        border-width: 5px;
     }
     #Categories{
         margin: 0px;
