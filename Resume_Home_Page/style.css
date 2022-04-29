@@ -323,6 +323,10 @@ a{
     #MainNavigation{
         justify-content: center;
     }
+
+    #SurroudingBox{
+        border-width: 1.05em;
+    }
     #HeaderSection{
         height: auto;
         /*margin-right: 2.5vw;
@@ -393,6 +397,8 @@ a{
     
         height: 12vh;
         min-width: 100%;
+
+        border-width: 1.05em;
     }
     #Categories{
         margin: 0px;
