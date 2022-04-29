@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REDD Robot</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+
+<body>
+    <nav id="Header">
+        <div id="navigation">
+           <a href="https://jonfrei.github.io/Resume/Resume_Home_Page" class="nav-item">Home</a>
+           <a href="#Footer" class="nav-item">Contact</a>
+        </div>
+    </nav>
+
+    <section id="Container">
+        <center><h1>Redd Robot</h1></center>
+        <div id="main-content">
+            <div id="Introduction">
+                <h2 id="h2-style">Introduction</h2>
+                <p class="p-style">The purpose of this project is to build a robot that will track and follow a ball of a specified color. In order to achieve this goal, basic principles of computer vision and control systems are applied to detect, follow and correct the path of the robot as it approaches the pre-determined object. The robot is powered by a Raspberry Pi and Arduino Nano. The Raspberry Pi uses a webcam to capture video and applies a set of filters using OpenCV library to detect and track the location of the ball. The data is transferred to the Arduino Nano, which receives the data and uses a closed loop feedback to control the robot.</p>
+                <div id="Introduction-img-container">
+                    <div id="Introduction-img"><img src="Introduction-1.png" alt="" class="Introduction-img-style"></div>
+                    <div id="Introduction-img"><img src="Introduction-2 - REDD_Robot.png" alt="" class="Introduction-img-style"></div>
+                    <div id="Introduction-img"><img src="Introduction-3 - REDD_Robot.png" alt="" class="Introduction-img-style"></div>
+                </div>
+            </div>
+            <div id="Design" class="contents">
+                <div id="Design-content">
+                    <h2 id="h2-style">Design</h2>
+                    <p class="p-style">The overall design of the robot has to house all critical components, which include but are not limited to:</p>
+                    <ol id="Design-ol">
+                        <li class="Design-li">Raspberry Pi</li>
+                        <li class="Design-li">Arduino Nano</li>
+                        <li class="Design-li">Motor drivers</li>
+                        <li class="Design-li">Basic Circuitry</li>
+                        <li class="Design-li">Battery</li>
+                        <li class="Design-li">Motors</li>
+                        <li class="Design-li">Webcam</li>
+                    </ol>
+                    <p class="p-style">All the components fit in the main assembly as displayed in the images below. One design obstacle was to reverse engineer the webcam housing in order to integrate an existing Dynex webcam into the robot.</p>
+                </div>
+                <div id="Design-img"> <img src="Design-1.png" alt="" class="content-img-style"></div>
+            </div>
+            <div id="Program" class="contents">
+                <div id="Program-content">
+                    <h2 id="h2-style">OpenCV</h2>
+                    <p class="p-style">Computers cannot process images like humans do. There are many methods for getting a computer to recognize people, objects, and different colors. OpenCV offers a large library for image processing in python. For this project, any color ball can be used. However, it is easier to detect a ball whose color stands out from its background. There are a set of filters that are applied below to detect the ball:</p>
+                    <ol>
+                        <li>The first filter sets the image to an HSV scale, which stands for Hue, Saturation and Value. Each color has a different representation for those 3 values. For example, a green object can have the HSV set as (0,128,0) where H is 0, S is 128 and V is 0. </li>
+                        <li>Once the HSV values are determined, the values are used in the program to isolate the determined color from the rest of the image. A filter is applied to convert the image to black and white. </li>
+                        <li>Once an image is black and white, the computer will run through each individual pixel in the image and determine which pixels contain the object. The object will be denoted by white and the background will be black. Once the computer has processed the image, it will draw a circle based on the edges of the ball left by the black and white image. </li>
+                        <li>The computer will obtain the center of the by using the equation of a circle and solving for both variables for the vertical and horizontal position. Since horizontal position of the ball is needed, that is the variable that will be used in the program.</li>
+                    </ol>
+                </div>
+                <div id="Program-img-container">
+                    <div id="Program-img"></div>
+                    <div id="Program-img"></div>
+                </div>
+            </div>
+            <div id="Controls" class="contents">
+                <div id="Controls-content">
+                    <h2 id="h2-style">Contols</h2>
+                    <p class="p-style">Computers cannot process images like humans do. There are many methods for getting a computer to recognize people, objects, and different colors. OpenCV offers a large library for image processing in python. For this project, any color ball can be used. However, it is easier to detect a ball whose color stands out from its background. There are a set of filters that are applied below to detect the ball:</p>
+
+                </div>
+                <div id="Controls-img"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="Footer">
+        <h3 id="h3-style">Let's chat</h3>
+        <div id="social-media">
+            <a href="" class="social-media-style">LinkedIn</a>
+            <a href="" class="social-media-style">Email</a>
+            <a href="" class="social-media-style">GitHub</a>          
+        </div>
+    </footer>
+</body>
+
+
+</html>

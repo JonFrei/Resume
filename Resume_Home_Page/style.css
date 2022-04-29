@@ -6,7 +6,7 @@
     --Color4: #86A873; /*Asparagus*/
     --Color5: #BB9F06; /*Lemon Curry*/
     --Color6: #D18804;
-    --MainBorderWidth: 0.3vw;
+    --MainBorderWidth: 1.2em;
     --MainBorderRadius: 0vw;
     --MainMargin: 5vw;
     --MainWidth: 90vw;
@@ -47,7 +47,7 @@ body{
 
     border: solid;
     border-color: var(--Color5);
-    border-width: 0.3vw;
+    border-width: var(--MainBorderWidth);
     
 }
 
@@ -331,14 +331,29 @@ a{
     #HeaderUList{
         height: 6vh;
 
+        padding: 0px;
+
         flex-direction: row;
-        align-items: center;
+        align-items: space-between;
+
+        justify-content: center;
+
+        gap: 10vw;
     }
     #HeaderList{
         padding:0px;
+        width: 20vw;
+        height: auto;
+
+        text-align: center;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .NavText{
         font-size: 5vw;
+        
     }
     #Title{
         font-size: 8vw;

@@ -13,7 +13,7 @@
 body{
     /*background-image: linear-gradient(135deg, var(--Color3), var(--Color4) );*/
     /*background-color: var(--Color3);*/
-    min-width: 100%;
+    width: 100%;
 
     padding:0px;
     margin: 0px;
