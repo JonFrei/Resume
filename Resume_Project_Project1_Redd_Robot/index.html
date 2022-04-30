@@ -16,6 +16,7 @@
 
 <body>
     <nav id="Header">
+        <h1>Redd Robot</h1>
         <div id="navigation">
            <a href="https://jonfrei.github.io/Resume/Resume_Home_Page" class="nav-item">Home</a>
            <a href="#Footer" class="nav-item">Contact</a>
@@ -23,10 +24,10 @@
     </nav>
 
     <section id="Container">
-        <center><h1>Redd Robot</h1></center>
+        
         <div id="main-content">
             <div id="Introduction">
-                <h2 id="h2-style">Introduction</h2>
+                <h2 id="Introduction-style">Introduction</h2>
                 <p class="p-style">The purpose of this project is to build a robot that will track and follow a ball of a specified color. In order to achieve this goal, basic principles of computer vision and control systems are applied to detect, follow and correct the path of the robot as it approaches the pre-determined object. The robot is powered by a Raspberry Pi and Arduino Nano. The Raspberry Pi uses a webcam to capture video and applies a set of filters using OpenCV library to detect and track the location of the ball. The data is transferred to the Arduino Nano, which receives the data and uses a closed loop feedback to control the robot.</p>
                 <div id="Introduction-img-container">
                     <div id="Introduction-img"><img src="Introduction-1.png" alt="" class="Introduction-img-style"></div>
@@ -55,16 +56,17 @@
                 <div id="Program-content">
                     <h2 id="h2-style">OpenCV</h2>
                     <p class="p-style">Computers cannot process images like humans do. There are many methods for getting a computer to recognize people, objects, and different colors. OpenCV offers a large library for image processing in python. For this project, any color ball can be used. However, it is easier to detect a ball whose color stands out from its background. There are a set of filters that are applied below to detect the ball:</p>
-                    <ol>
-                        <li>The first filter sets the image to an HSV scale, which stands for Hue, Saturation and Value. Each color has a different representation for those 3 values. For example, a green object can have the HSV set as (0,128,0) where H is 0, S is 128 and V is 0. </li>
-                        <li>Once the HSV values are determined, the values are used in the program to isolate the determined color from the rest of the image. A filter is applied to convert the image to black and white. </li>
-                        <li>Once an image is black and white, the computer will run through each individual pixel in the image and determine which pixels contain the object. The object will be denoted by white and the background will be black. Once the computer has processed the image, it will draw a circle based on the edges of the ball left by the black and white image. </li>
-                        <li>The computer will obtain the center of the by using the equation of a circle and solving for both variables for the vertical and horizontal position. Since horizontal position of the ball is needed, that is the variable that will be used in the program.</li>
+                    <ol id="Program-ol">
+                        <li class="Program-li">The first filter sets the image to an HSV scale, which stands for Hue, Saturation and Value. Each color has a different representation for those 3 values. For example, a green object can have the HSV set as (0,128,0) where H is 0, S is 128 and V is 0. </li>
+                        <li class="Program-li">Once the HSV values are determined, the values are used in the program to isolate the determined color from the rest of the image. A filter is applied to convert the image to black and white. </li>
+                        <li class="Program-li">Once an image is black and white, the computer will run through each individual pixel in the image and determine which pixels contain the object. The object will be denoted by white and the background will be black. Once the computer has processed the image, it will draw a circle based on the edges of the ball left by the black and white image. </li>
+                        <li class="Program-li">The computer will obtain the center of the by using the equation of a circle and solving for both variables for the vertical and horizontal position. Since horizontal position of the ball is needed, that is the variable that will be used in the program.</li>
                     </ol>
                 </div>
                 <div id="Program-img-container">
-                    <div id="Program-img"></div>
-                    <div id="Program-img"></div>
+                    <div id="Program-img"><img src="Program-1.png" alt="" class="content-img-style"></div>
+                    <div id="Program-img"><img src="Program-2.png" alt="" class="content-img-style"></div>
+                    <div id="Program-img"><img src="Program-3.png" alt="" class="content-img-style"></div>
                 </div>
             </div>
             <div id="Controls" class="contents">
@@ -73,7 +75,7 @@
                     <p class="p-style">Computers cannot process images like humans do. There are many methods for getting a computer to recognize people, objects, and different colors. OpenCV offers a large library for image processing in python. For this project, any color ball can be used. However, it is easier to detect a ball whose color stands out from its background. There are a set of filters that are applied below to detect the ball:</p>
 
                 </div>
-                <div id="Controls-img"></div>
+                <div id="Controls-img"><img src="Controls-1.png" alt="" class="content-img-style"></div>
             </div>
         </div>
     </section>
