@@ -326,20 +326,19 @@ hr{
     display: flex;
     flex-direction: column;
 
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 10vw;
+    /*gap: 10vw;*/
 }
 
 #h3-style{
     display: flex;
-    justify-content: center;
     align-items: flex-end;
-
+    
     height: 100%;
-    min-height: 30vh;
-    max-height: 50vh;
+
     font-size: 300%;
+    text-align: center;
 
     color: white;
 
@@ -350,18 +349,19 @@ hr{
     height: 100%;
     width: 100%;
 
-    margin-top: 15%;
-    margin-bottom: 15%;
 
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+
+    margin-bottom: 10%;
 }
 
 .social-media-buttons{
-    color: white;
     text-decoration: none;
+    font-size: 1.8em;
+    color: white;
 }
 
 
