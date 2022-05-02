@@ -187,30 +187,27 @@ body{
     font-size: 1.4em;
 
     border-style: solid;
-    border-color: var(--Color5)
+    border-color: var(--Color5);
+
+    box-shadow: 0px 0px 2vw black;
 }
 #projects-heading{
     font-size: 5em;
-    color: var(--Color1);
+    color: white;
     text-align: center;
 
     margin: 1em 0em 1em 0em;
 }
 .project-tile{
-    margin: 0px;
-
-    /*
-    padding-top: 1em;
-    padding-bottom: 1em;
-*/
-    font-size: 1.2em;
-
-    /*
+      /*
     border-style: solid;
     border-color: red;
     */
-
+    margin: 0px;
+    font-size: 1.2em;
     background-color: var(--Color5);
+    border-style: solid;
+    border-color: var(--Color5);
     /*opacity: 0.8;*/
     color: white;
 }
