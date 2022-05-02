@@ -50,6 +50,7 @@ body{
     border: solid;
     border-color: var(--Color5);
     border-width: var(--MainBorderWidth);
+    border-radius: 5px;
 
     position: fixed;
     top: 5vh;
@@ -64,31 +65,23 @@ body{
     margin-bottom: 1vh;
 
     display: flex;
-    justify-content: flex-start;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
 }
 #HeaderSection{
     
     font-family: 'Roboto Mono', monospace;
-
-    /*border-style: solid;
-    border-color: var(--Color5);
-    border-width: var(--MainBorderWidth);
-    border-top-left-radius: var(--MainBorderRadius);
-    border-top-right-radius: var(--MainBorderRadius);
-    border-bottom-style:none;
-    */
-    
+   
     width: 100%;
     height: auto;
-
 }
 
 #Title{
     font-family: 'Roboto Mono', monospace;
 
     text-align: left;
-    font-size: 5vw;
+    font-size: 5.5vw;
     color: white;
     -webkit-text-stroke-width: 10%;
     -webkit-text-stroke-color: var(--Color2);
@@ -99,26 +92,8 @@ body{
     display: flex;
     align-items: center;
 }
-#Title{
-    animation-name: fade-in;
-    animation-duration: 3s;
 
-    position: relative;
-    left: 0px;
-}
-/*
-@keyframes fade-in{
-    0%{
-        left: 100%;
-        opacity: 0.01;
-    }
-    
-    100%{
-        right: 0px;
-    }
-}
-*/
-#HeaderUList{
+.HeaderUList{
     /*Troubleshooting*/
     /*
     border-style: solid;
@@ -134,25 +109,41 @@ body{
     margin: 0px;
 
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    flex-direction: row;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 10vw;
 
     height: 15vh;
+
 }
 
 #HeaderList{
-    border-style: none;
-    /*border-color: black;*/
-    /*border-radius: 0.5em;*/
-    width: 15vmax;
-    height: auto;
-     
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    padding: 0.5em 1em 0px 0em;
+    border-style: solid;
+    border-color: var(--Color5);
+    border-radius: 5px;
 
-    text-align: left;
+    width: 15vw;
 
+    min-width: 200px;
+    max-width: 300px;
+
+    height: 8vh;
+
+    min-height: 50px;
+    max-height: 75px;
+
+    padding: 5px 0px 5px 0px;
+
+    text-align: center;
     
+    transition: 0.7s ease;
 
     /*Troubleshooting*/
     /*
@@ -162,32 +153,36 @@ body{
 }
 
 #HeaderList:hover{
-    /*
-    animation-name: a_ScaleOnHover;
-    animation-duration: 500ms;
-    */
-    transform: scale(1.1);
-
-    border-bottom-style: solid;
-    border-radius: none;
-    border-bottom-color: var(--Color5)
+    color: var(--Color5);
 }
 
-/*
-@keyframes a_ScaleOnHover{
-    100% {
-        transform: scale(1.1);
-    }
-}
-*/
-
-a{
+.NavText{
     font-family: 'Roboto Mono', monospace;
     color: white;
     font-size: 2vw;
     -webkit-text-stroke-width: 10%;
     -webkit-text-stroke-color: var(--Color2);
     text-decoration: none;
+}
+
+.NavText:hover{
+    color: var(--Color5);
+}
+
+.hamburger{
+    display: none;
+    cursor: pointer;
+
+}
+
+.bar{
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    background-color: white;
 }
 
 #container{
@@ -239,149 +234,62 @@ a{
     height: 100%;
     width: 100%;
 }
-#sub_container_1{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    gap: 1vw;
-       
 
-    padding-bottom: 3vw;
-    margin-right: 1vw;
-    margin-left: 1vw;
-}
 
-/*
-#sub_container_2{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-
-    padding-bottom: 3vw;
-
-}
-*/
-#ContainerContents{
-    height:25vh;
-    width: 40vw;
-    min-width: 150px;
-
-    max-width: 20%;
-    max-height: 100%;
-
-    background-color: var(--Color1);
+@media screen and (max-width: 912px) {
     
-    border-style:solid;
-    border-radius: var(--MainBorderRadius);
-    border-color: var(--Color5);
-    border-width: var(--MainBorderWidth);
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    align-items: center;
-
-
-    margin-bottom: 2vh;
-}
-
-#Categories{
-    font-family: 'Roboto Mono', monospace;
-
-    text-align: center;
-    font-size: 2.4vw;
-
-    color: white;
-
-    padding-left: 0.2em;
-    padding-right: 0.2em;
-    width: min-content;
-}
-
-/*
-@media screen and (min-width: 1920px) {
-
-
-
-    #Categories{
-        font-size: 2vw;;
-    }
-    #container{
-        justify-content: center;
-        flex-direction: row;
-        
-    }
-
-    #sub_container_1{
-        width: 100%;
-        justify-content: center;
-
-        padding-bottom: 3vh;
-    }
-*/
-    /*
-    #sub_container_2{
-        width: 45%;
-        justify-content: left;
-
-        padding-bottom: 3vh;
-    }
-    */
-/*
-    .ContainerContents{
-        height:25vh;
-        width: 20vw;
-        min-width: 150px;
-    }
-    .Skills{
-        margin-right: 2%;
-    }
-    .ProfessionalExperience{
-        margin-right: 1%;
-    }
-    .PersonalProjects{
-        margin-left: 1%;
-    }
- 
-    .Referral{
-        margin-left: 2%;
-    }
-}
-*/
-@media screen and (max-width: 600px) {
-    /*
-    #container {
-        width: 90vw;
-        margin-right: 2.5vw;
-        margin-left: 2.5vw;  
-    }
-    */
     #MainNavigation{
-        justify-content: center;
+        flex-direction: row;
+        justify-content:space-around;
+
+        
+
+        max-width: 100%;
+
+        padding: 0px 1vw 0px 3vw;
     }
 
     #SurroudingBox{
         border-width: 5px;
     }
+
     #HeaderSection{
         height: auto;
-        /*margin-right: 2.5vw;
-        margin-left: 2.5vw;*/
     }
-    #HeaderUList{
-        height: 6vh;
 
-        padding: 0px;
+    .HeaderUList{
 
-        flex-direction: row;
-        align-items: space-between;
+        position: fixed;
+        left: 100%;
+        top: 70px;
+        gap: 0px;
 
-        justify-content: center;
+        flex-direction: column;
+        justify-content: flex-start;
 
-        gap: 10vw;
+        background-color: var(--Color1);
+        border: solid;
+        border-color: var(--Color5);
+        
+
+        width: 100%;
+        height: 25vh;
+        text-align: center;
+        transition: 0.3s;
+
+    
+    }
+
+
+    /* What happens to the navigation list items when the hamburger button is pressed*/
+    .HeaderUList.active{
+        position: fixed;
+        left: 0px;
+
+        width: 100%;
+
+        box-shadow: 0px 0px 10px black;
+
     }
     #HeaderList{
         padding:0px;
@@ -393,13 +301,35 @@ a{
         display: flex;
         align-items: center;
         justify-content: center;
+
+        margin: 16px 0px;
     }
+
     .NavText{
         font-size: 5vw;
         
     }
+
+    /* Hamburger icon */
+    .hamburger{
+        display: block;
+        width: 5%;
+    }
+
+    .hamburger.active .bar:nth-child(2){
+        opacity:0;
+    }
+    .hamburger.active .bar:nth-child(1){
+        transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger.active .bar:nth-child(3){
+        transform: translateY(-8px) rotate(-45deg);
+    }
+    /***********************************/
+
+
     #Title{
-        font-size: 8vw;
+        font-size: 7vw;
         justify-content: center;
 
         padding-left: 0em;
@@ -407,9 +337,24 @@ a{
     }
     #container{
         flex-direction: column;   
-        justify-content: center;
+        justify-content: space-around;
         align-items: center;    
     }
+    #img-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 100%;
+        height: 100%;
+
+        max-width: 190px;
+        max-height: 190px;
+
+    }
+}
+
+@media (max-width: 600px){
     #img-container{
         display: flex;
         justify-content: center;
@@ -422,57 +367,8 @@ a{
         max-height: 125px;
 
     }
-/*
-    #sub_container_1{
-        flex-direction: column;
-        
-
-        margin-right: auto;
-        margin-left: auto;
-
-        padding-bottom: 0em;
-
-        width: 80%;
-    }
-    */
-    /*
-    #sub_container_2{
-        flex-direction: column;
-    
-        margin-right: auto;
-        margin-left: auto;
-
-        padding-bottom: 0em;
-
-        width: 80%;
-    }
-    */
-    /*
-    #ContainerContents{
-    
-        height: 12vh;
-        min-width: 100%;
-
-        border-width: 5px;
-    }
-    #Categories{
-        margin: 0px;
-        font-size: 6vw;
-    }
-    .Skills{
-        margin-bottom: 5%;
-    }
-    .ProfessionalExperience{
-        margin-bottom: 5%;
-    }
-    .PersonalProjects{
-        margin-bottom: 5%;
-    }
-    .Referral{
-        margin-bottom: 5%;
-    }
-    */
 }
+
 @media screen and (max-height: 600px){
     #MainNavigation{
         position: relative;
@@ -494,34 +390,5 @@ a{
     }
     #Title{
         align-items: center;
-    }
-}
-
-/*@media  screen and (min-width: 1024px) {
-   
-}*/
-
-
-#ContainerContents:hover{
-    animation-name: pulsate;
-    animation-duration: 1s;
-    animation-timing-function: ease-in-out; 
-
-}
-
-/*
-#Categories:hover{
-    border-bottom: solid;
-    border-color: var(--Color5);
-}
-*/
-@keyframes pulsate {
-    50%{
-        transform: scale(1.05);
-    }
-    0%{
-        
-        box-shadow:
-        0px 1.4em 2.8em -1.8em var(--Color6);
     }
 }

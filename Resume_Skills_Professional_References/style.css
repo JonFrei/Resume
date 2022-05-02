@@ -328,26 +328,35 @@ hr{
 
     justify-content: center;
     align-items: center;
-    gap: 10vh;
+    gap: 10vw;
 }
 
 #h3-style{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    height: 100%;
+    min-height: 30vh;
+    max-height: 50vh;
+    font-size: 300%;
+
     color: white;
 
-    margin: 0px;
-    margin-top: 50px;
-
-    font-size: 2em;
-    text-align: center;
+    margin-bottom: 5%;
 }
 
 #social-media{
+    height: 100%;
+    width: 100%;
+
+    margin-top: 15%;
+    margin-bottom: 15%;
+
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-
-    width: 30vw;
 }
 
 .social-media-buttons{
@@ -417,13 +426,17 @@ hr{
         */
     }
     
-
+    #Footer{
+        gap: 0px;
+    }
     #social-media{
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
+        gap: 30px;
 
-        gap: 5vh;
+        max-height: 300px;
+
     }
 
 
