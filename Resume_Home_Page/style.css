@@ -22,7 +22,7 @@ html{
 }
 
 body{
-    background: radial-gradient(var(--Color2) 25%,var(--Color3) 200%);
+    background: linear-gradient(0deg, var(--Color2) 0%,var(--Color3) 100%);
     justify-content: center;
     display: flex;
     flex-direction: row;
@@ -31,9 +31,10 @@ body{
     
     }
 #SurroundingBox{
-    background-color: var(--Color3);
+    background-color: var(--Color1);
     width: var(--MainWidth);
     height: auto;
+    min-height: 450px;
     margin-top: 2vh;
     margin-left: 0px;
     margin-right: 0px;
@@ -44,11 +45,17 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    align-items: center;
 
     border: solid;
     border-color: var(--Color5);
     border-width: var(--MainBorderWidth);
-    
+
+    position: fixed;
+    top: 5vh;
+    bottom: 5vh;
+    left: auto;
+    right: auto;    
 }
 
 #MainNavigation{
@@ -72,7 +79,7 @@ body{
     border-bottom-style:none;
     */
     
-    width: auto;
+    width: 100%;
     height: auto;
 
 }
@@ -184,22 +191,54 @@ a{
 }
 
 #container{
+    width: 100%;
+    height: 100%;
 
-    width: auto;
-
-    padding-top: 3vw;
+    padding-top: 2vh;
    
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    align-items: center;
 
     /*Troubleshooting*/
     /*
     border-style: solid;
     border-color: purple;
     */
+
+    gap: 5vw;
 }
 
+#img-container{
+    /*troubleshooting*/
+    /*
+    background-color: black;
+    border-style: solid;
+    border-color: white;
+    */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 100px;
+    min-height: 100px;
+
+    max-width: 300px;
+    max-height: 300px;
+}
+#logo-style{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+}
 #sub_container_1{
     width: 100%;
     display: flex;
@@ -232,7 +271,7 @@ a{
     max-width: 20%;
     max-height: 100%;
 
-    background-color: var(--Color3);
+    background-color: var(--Color1);
     
     border-style:solid;
     border-radius: var(--MainBorderRadius);
@@ -312,7 +351,7 @@ a{
     }
 }
 */
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 600px) {
     /*
     #container {
         width: 90vw;
@@ -367,9 +406,20 @@ a{
         padding-right: 0em;
     }
     #container{
-        flex-direction: column;       
+        flex-direction: column;   
+        justify-content: center;
+        align-items: center;    
     }
+    #img-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
+        width: 125px;
+
+        height: 125px;
+    }
+/*
     #sub_container_1{
         flex-direction: column;
         
@@ -381,6 +431,7 @@ a{
 
         width: 80%;
     }
+    */
     /*
     #sub_container_2{
         flex-direction: column;
@@ -393,6 +444,7 @@ a{
         width: 80%;
     }
     */
+    /*
     #ContainerContents{
     
         height: 12vh;
@@ -416,6 +468,7 @@ a{
     .Referral{
         margin-bottom: 5%;
     }
+    */
 }
 @media screen and (max-height: 600px){
     #MainNavigation{
