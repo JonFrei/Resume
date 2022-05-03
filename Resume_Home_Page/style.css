@@ -58,8 +58,16 @@ body{
     left: auto;
     right: auto;    
 }
+#HeaderSection{
+    
+    font-family: 'Roboto Mono', monospace;
+   
+    width: 100%;
+    height: auto;
+}
 
-#MainNavigation{
+/*-------------Navigation Bar--------------*/
+#navbar{
     height: auto;
     margin-top: 0vh;
     margin-bottom: 1vh;
@@ -69,15 +77,8 @@ body{
     justify-content: space-between;
     align-items: center;
 }
-#HeaderSection{
-    
-    font-family: 'Roboto Mono', monospace;
-   
-    width: 100%;
-    height: auto;
-}
 
-#Title{
+#h1-style{
     font-family: 'Roboto Mono', monospace;
 
     text-align: left;
@@ -93,7 +94,7 @@ body{
     align-items: center;
 }
 
-.HeaderUList{
+.nav-menu{
     /*Troubleshooting*/
     /*
     border-style: solid;
@@ -120,7 +121,7 @@ body{
 
 }
 
-#HeaderList{
+#nav-item{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -152,20 +153,22 @@ body{
     */
 }
 
-#HeaderList:hover{
+#nav-item:hover{
     color: var(--Color5);
 }
 
-.NavText{
+.nav-link{
     font-family: 'Roboto Mono', monospace;
     color: white;
     font-size: 2vw;
+    /*
     -webkit-text-stroke-width: 10%;
     -webkit-text-stroke-color: var(--Color2);
     text-decoration: none;
+    */
 }
 
-.NavText:hover{
+.nav-link:hover{
     color: var(--Color5);
 }
 
@@ -184,6 +187,11 @@ body{
     transition: all 0.3s ease-in-out;
     background-color: white;
 }
+/*--------------------------------------------------*/
+
+
+
+/*------------------container------------------*/
 
 #container{
     width: 100%;
@@ -238,17 +246,6 @@ body{
 
 @media screen and (max-width: 912px) {
     
-    #MainNavigation{
-        flex-direction: row;
-        justify-content:space-around;
-
-        
-
-        max-width: 100%;
-
-        padding: 0px 1vw 0px 3vw;
-    }
-
     #SurroudingBox{
         border-width: 5px;
     }
@@ -257,7 +254,29 @@ body{
         height: auto;
     }
 
-    .HeaderUList{
+
+    /*----------------------------------navbar-----------------------------------*/
+
+    #navbar{
+        flex-direction: row;
+        justify-content:space-around;
+
+        
+
+        max-width: 100%;
+
+        padding: 0px 1vw 0px 3vw;
+    } 
+
+    #h1-style{
+        font-size: 7vw;
+        justify-content: center;
+
+        padding-left: 0em;
+        padding-right: 0em;
+    }
+
+    .nav-menu{
 
         position: fixed;
         left: 100%;
@@ -276,13 +295,11 @@ body{
         height: 25vh;
         text-align: center;
         transition: 0.3s;
-
-    
     }
 
 
     /* What happens to the navigation list items when the hamburger button is pressed*/
-    .HeaderUList.active{
+    .nav-menu.active{
         position: fixed;
         left: 0px;
 
@@ -291,7 +308,7 @@ body{
         box-shadow: 0px 0px 10px black;
 
     }
-    #HeaderList{
+    #nav-item{
         padding:0px;
         width: 20vw;
         height: auto;
@@ -305,7 +322,7 @@ body{
         margin: 16px 0px;
     }
 
-    .NavText{
+    .nav-link{
         font-size: 5vw;
         
     }
@@ -325,16 +342,10 @@ body{
     .hamburger.active .bar:nth-child(3){
         transform: translateY(-8px) rotate(-45deg);
     }
-    /***********************************/
+    /************************************************************************************/
 
 
-    #Title{
-        font-size: 7vw;
-        justify-content: center;
-
-        padding-left: 0em;
-        padding-right: 0em;
-    }
+   
     #container{
         flex-direction: column;   
         justify-content: space-around;

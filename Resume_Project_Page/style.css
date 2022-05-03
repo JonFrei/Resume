@@ -21,7 +21,9 @@ body{
     font-family: 'Roboto Mono', monospace;
 }
 
-#navbar{
+
+/*-----------------------Header------------*/
+#Header{/*
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -31,66 +33,161 @@ body{
     left: 0px;
 
     width: 100%;
+    height: 50px;
+    */
+    position: fixed;
+    top: 0px;
+    left: 0px;
+
+    height: 50px;
+    width: 100%;
+
+
+    background-color: var(--Color5);
+
+    z-index: 5;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 
     /*
     border: solid;
     border-color: red;
     */
-
+    /*
     background-color: var(--Color5);
+    */
 }
 
-#nav-buttons{
+
+
+#navbar{
+    /*
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-
+*/
     /*
     border: solid;
     border-color: blue;
     */
-
+/*
     width: 300px;
     height: var(--navbar-height);
     align-items: center;
-
+*/
     /*
     margin-right: 1vw;
     margin-left: 1vw;
     */
+
+    margin: 0px;
+    padding: 0px;
+    padding-right: 2vw;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    width: 100%;
 }
 
-.button-format{
+#h1-style{
+    /*
+    font-size: 5em;
+    color: white;
+    text-align: center;
+
+    margin: 1em 0em 1em 0em;
+    */
+    /*
+    padding: 0px 0px 0px 5vw;
+
+    display: flex;
+    align-items: center;
+
+    color: white;
+    */
+    margin: 0px;
+    padding: 0.5em 0.25em 0.5em 5%;
+
+    display: flex;
+    align-items: center;
+
+    color: white;
+}
+
+.nav-menu{
+    list-style-type: none;
+      
+
+    padding-bottom: 0.5em;
+    padding-left: 5%;
+    padding-right: 0em;
+    margin: 0px;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 10vw;
+
+    height: 50px;
+}
+
+#nav-item{
+    text-align: center;
+    
+    transition: 0.7s ease;
+}
+#nav-item:hover{
+    color: var(--Color1);
+}
+
+.nav-link{
     /*
     border: solid;
     border-color: green;
     */
 
+    /*
     width: 80px;
 
    text-align: center;
    text-decoration: none;
-   font-size: 1.6em;
+   font-size: 1.2em;
    font-style: bold;
    color: white;
+*/
+   color: white;
+   text-decoration: none;
+   font-size: 1.2em;
 }
 
-.button-format:hover{
-    animation-name: button-format-animation;
-    animation-duration: 1s;
-    animation-timing-function: cubic-bezier(0.3, 0.4, 0.5, 1.6);
+.nav-link:hover{
+    color: var(--Color1);
 }
 
-@keyframes button-format-animation {
-    50%{
-        transform: scale(1.2);
-        color: var(--Color1);  
-    }
-    100%{
-        transform: scale(1);
-        color: white;
-    }
+.hamburger{
+    display: none;
+    cursor: pointer;
+
 }
+
+.bar{
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    background-color: white;
+}
+/*-------------------------------------------*/
 
 /*
 .main-h1{
@@ -125,6 +222,10 @@ body{
     
 }
 */
+
+
+
+/*----------------------------------Projects-----------------*/
 #projects{
    /* background-image: linear-gradient(180deg, var(--Color3) 0%, var(--Color2) 100%);*/
    background-image: linear-gradient(180deg, var(--Color1) 0%, var(--Color1) 200%);
@@ -159,6 +260,7 @@ body{
 
     margin-right: 3vw;
     margin-left: 3vw;
+    margin-top: 75px;
 
     padding-bottom: 1.4em;
 
@@ -191,13 +293,7 @@ body{
 
     box-shadow: 0px 0px 2vw black;
 }
-#projects-heading{
-    font-size: 5em;
-    color: white;
-    text-align: center;
 
-    margin: 1em 0em 1em 0em;
-}
 .project-tile{
       /*
     border-style: solid;
@@ -258,7 +354,7 @@ body{
     }
 }
 
-#footer{
+#Footer{
     /*
     border: solid;
     border-color: red;
@@ -276,9 +372,9 @@ body{
 
 }
 
-.main-h3{
+.h3-style{
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     
     height: 100%;
 
@@ -286,10 +382,9 @@ body{
     text-align: center;
 
     color: white;
-
-    margin-bottom: 5%;
 }
 
+/*
 .sub-h3{
     margin-top: 0em;
     margin-bottom: 3em;
@@ -298,7 +393,7 @@ body{
     color: white;
     text-align: center;
 }
-
+*/
 #social-media{
     /*
     border:solid;
@@ -339,22 +434,108 @@ body{
 }
 
 
+
+/*------------------mobile view----------------*/
+
 @media screen and (max-width: 800px){
 
     #body{
-        
-        /*position: fixed;
-        top: 0px;
-        right: 0px;
-        left: 0px;
-        bottom:0px;
-        */
         width: 100%;
     }
+    
+
+
+    /*------------------------navbar---------------*/
     #navbar{
-        max-width:100%;
-        justify-content: center;
+        flex-direction: row;
+        justify-content:space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        gap: 0px;
+
+        padding: 0px 7vw 0px 3vw;
     }
+    #h1-style{
+        /*margin-top: 1.4em;*/
+        margin: 0px;
+
+        font-size: 1em;
+    }
+
+    .nav-menu{
+
+        
+        position: fixed;
+        left: 100%;
+        top: 0px;
+        gap: 0px;
+
+        flex-direction: column;
+        justify-content: flex-start;
+
+        background-color: var(--Color1);
+        border: solid;
+        border-color: var(--Color5);
+        
+
+        width: 100%;
+        height: 25vh;
+        text-align: center;
+        transition: 0.3s;
+        
+    }
+    .nav-menu.active{
+        position: fixed;
+        left: 0px;
+        top: 0px;
+
+        width: 100%;
+
+        box-shadow: 0px 0px 10px black;
+
+    }
+    #nav-item{
+        padding:0px;
+        width: 20vw;
+        height: auto;
+
+        text-align: center;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 16px 0px;
+    }
+
+    .nav-link{
+        font-size: 5vw;
+        
+    }
+
+    /* Hamburger icon */
+    .hamburger{
+        display: block;
+        width: 5%;
+    }
+
+    .hamburger.active .bar:nth-child(2){
+        opacity:0;
+    }
+    .hamburger.active .bar:nth-child(1){
+        transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger.active .bar:nth-child(3){
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+
+
+    /*----------------------------------------------*/
+
+
+
 
     #projects-grid{
         min-height: 800px;
@@ -370,18 +551,14 @@ body{
         font-size: 3vw;
         height: auto;
     }
-
-    #projects-heading{
-        margin-top: 1.4em;
-    }
-
-    .main-h3{
+    
+    .h3-style{
         margin-top: 0.8em;
         margin-bottom: 1.6em;
         font-size: 12vw;
     }
     
-    #footer{
+    #Footer{
         gap: 0px;
     }
     #social-media{
