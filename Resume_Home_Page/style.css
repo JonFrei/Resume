@@ -164,8 +164,9 @@ body{
     /*
     -webkit-text-stroke-width: 10%;
     -webkit-text-stroke-color: var(--Color2);
-    text-decoration: none;
     */
+    text-decoration: none;
+    
 }
 
 .nav-link:hover{

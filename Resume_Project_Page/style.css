@@ -286,7 +286,7 @@ body{
 
     color: black;
     text-decoration: none;
-    font-size: 1.4em;
+    /*font-size: 1.4em;*/
 
     border-style: solid;
     border-color: var(--Color5);
@@ -300,7 +300,7 @@ body{
     border-color: red;
     */
     margin: 0px;
-    font-size: 1.2em;
+    font-size: 1.4em;
     background-color: var(--Color5);
     border-style: solid;
     border-color: var(--Color5);
@@ -313,6 +313,9 @@ body{
     justify-content: center;
     align-items: center;
     height: 75px;
+
+    border: solid;
+    border-color: var(--Color5);
 }
 
 .project-img{
@@ -321,6 +324,7 @@ body{
    width: 100%; 
 }
 
+/*
 .show-all-button{
     background-color: var(--Color1);
 
@@ -353,7 +357,7 @@ body{
       
     }
 }
-
+*/
 #Footer{
     /*
     border: solid;
@@ -460,7 +464,7 @@ body{
         /*margin-top: 1.4em;*/
         margin: 0px;
 
-        font-size: 1em;
+        font-size: 1.4em;
     }
 
     .nav-menu{
@@ -491,26 +495,40 @@ body{
         top: 0px;
 
         width: 100%;
+        min-height: 200px;
 
         box-shadow: 0px 0px 10px black;
 
     }
     #nav-item{
-        padding:0px;
-        width: 20vw;
-        height: auto;
-
-        text-align: center;
-
         display: flex;
         align-items: center;
         justify-content: center;
 
+    
+        border-style: solid;
+        border-color: var(--Color5);
+        border-radius: 5px;
+    
+        width: 15vw;
+    
+        min-width: 200px;
+        max-width: 300px;
+    
+        height: 8vh;
+    
+        min-height: 45px;
+        max-height: 50px;
+    
+        padding: 5px 0px 5px 0px;
         margin: 16px 0px;
+      
+        text-align: center;
+
     }
 
     .nav-link{
-        font-size: 5vw;
+        font-size: 1.1em;
         
     }
 
