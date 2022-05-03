@@ -82,7 +82,7 @@ body{
     justify-content: space-between;
     align-items: center;
 
-    gap: 10vw;
+    gap: 5vw;
 
     height: 50px;
 }
@@ -97,20 +97,6 @@ body{
 }
 
 .nav-link{
-    /*
-    border: solid;
-    border-color: green;
-    */
-
-    /*
-    width: 80px;
-
-   text-align: center;
-   text-decoration: none;
-   font-size: 1.2em;
-   font-style: bold;
-   color: white;
-*/
    color: white;
    text-decoration: none;
    font-size: 1.2em;
@@ -138,7 +124,7 @@ body{
 /*------------------------------------------*/
 
 
-/*-------------Container--------------*/
+/*-------------Timeline--------------*/
 
 #container{
     position: absolute;
@@ -186,12 +172,21 @@ body{
 
     display: grid;
     grid-template-columns: auto min-content 25px min-content auto;
-    grid-template-rows: 25px 50px 25px  10vh min-content 5vh min-content 5vh min-content 20vh 25px 50px 25px;
+    grid-template-rows: 75px 50px 25px  10vh min-content 5vh min-content 5vh min-content 20vh 25px 50px 25px;
     column-count: 12px;
 
     justify-content: space-between;
     align-items: center;    
    
+}
+
+#skills-button{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    left: 5px;
+    width: auto;
+    height: 30px;
 }
 
 /*vertical line*/
@@ -338,13 +333,120 @@ hr{
     grid-row: 9;
     grid-column: 2;
 }
+/*--------------------------------*/
+
+
+/*----------Skills------------------*/
+
+
+#skills-content{
+    /*Troubleshooting*/
+    /*
+    border-style:solid;
+    border-color: blue;
+    */
+    padding-bottom: 3em;
+
+}
+
+#skills-container{
+ /*Troubleshooting*/
+ /*
+ border-style:solid;
+ border-color: green;
+*/
+
+ display: flex;
+ flex-direction: column;
+ justify-content: flex-start;
+ align-items: center;
+
+ gap: 1.2em;
+}
+
+#skills-box{
+ /*Troubleshooting*/
+ /*
+ border-style:solid;
+ border-color: yellow;
+*/
+
+ width: 90%;
+ 
+}
+
+#h4-style{
+ /*Troubleshooting*/
+ /*
+ border-style:solid;
+ border-color: purple;
+*/
+
+ display: flex;
+ justify-content: flex-start;
+ align-items: center;
+ margin-bottom: 0px;
+}
+
+#skills-list{
+ /*Troubleshooting*/
+ /*
+ border-style:solid;
+ border-color: red;
+*/
+
+ height: 80px;
+ width: auto;
+
+ display: flex;
+ flex-direction: column;
+ justify-content: flex-start;
+ 
+ flex-wrap: wrap;
+
+ border-style: solid;
+ border-color: var(--Color5);
+
+ line-height: 1.6em;
+
+ padding: 0.6em 2em;
+}
+
+#skills-list-item{
+ /*Troubleshooting*/
+ /*
+ border-style:solid;
+ border-color: orange;
+ */
+ font-size: 1em;
+ width: 200px;
+}
+
+
+
+
+/*--------------------------------------*/
+
+
+
+/*-------------------job data-------------*/
 
 .main-content-styling{
     margin-left: 2%;
     margin-right: 2%;
+
+
 }
+
+
+
 #content-start{
     height: 50px;
+}
+
+#h2-style{
+    border-bottom: solid;
+    border-color: var(--Color5);
 }
 
 #job-data{
@@ -365,7 +467,6 @@ hr{
     height: auto;
 
     background-image: linear-gradient(180deg, var(--Color2) 0%, var(--Color3) 100%);
-
 }
 
 #main-content-1{
@@ -378,6 +479,8 @@ hr{
 
 #main-content-3{
     height: auto;
+
+    padding-bottom: 4em;
 }
 
 
