@@ -8,8 +8,9 @@
 
 }
 
-html{
-    font-size: 16px;
+html, body{
+    max-width: 100%!important;
+    overflow-x: hidden!important;
 }
 
 body{
@@ -572,13 +573,12 @@ hr{
 
 @media screen and (max-width: 600px){
 
-   
-   body{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
 
-   }
+    body{
+        position: static;
+        left: 0px;
+        right: 0px;
+    }
 
     /*-------------------navigation----------*/
     #Header{
@@ -586,7 +586,8 @@ hr{
         top: 0px;
         bottom: 50px;
         left: 0px;
-        right: 100%;
+        right: 0px;
+        
 
         width: 100vw;
     }
