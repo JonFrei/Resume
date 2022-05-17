@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REDD Robot</title>
+    <title>KIN Robot</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -15,79 +15,61 @@
 
 
 <body>
-    <nav id="Header">
-        <h1 id=" h1-style">Redd Robot</h1>
-        <div id="navbar">
-           <a href="https://jonfrei.github.io/Resume/Resume_Home_Page" class="nav-item">Home</a>
-           <a href="#Footer" class="nav-item">Contact</a>
-        </div>
-    </nav>
+    <div id="Header">
+       
+        <nav id="navbar">
+            <h1 id="h1-style">KIN Robot</h1>
+            <ul class="nav-menu">
+                <li id="nav-item"><a href="https://jonfrei.github.io/Resume/Resume_Home_Page" class="nav-link">Home</a></li>
+                <li id="nav-item"><a href="https://jonfrei.github.io/Resume/Resume_Skills_Professional_References" class="nav-link">Resume</a></li>
+                <li id="nav-item"><a href="https://jonfrei.github.io/Resume/Resume_Project_Page" class="nav-link">Projects</a></li>
+                <li id="nav-item"><a href="#Footer" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </div>
+    <script src="script.js"></script>
 
     <section id="Container">
         
         <div id="main-content">
             <div id="Introduction">
-                <h2 id="Introduction-style">Introduction</h2>
-                <p class="p-style">The purpose of this project is to build a robot that will track and follow a ball of a specified color. In order to achieve this goal, basic principles of computer vision and control systems are applied to detect, follow and correct the path of the robot as it approaches the pre-determined object. The robot is powered by a Raspberry Pi and Arduino Nano. The Raspberry Pi uses a webcam to capture video and applies a set of filters using OpenCV library to detect and track the location of the ball. The data is transferred to the Arduino Nano, which receives the data and uses a closed loop feedback to control the robot.</p>
+                <h2 id="Introduction-style">KIN Robot</h2>
+                <p class="p-style Introduction-p-style">The KIN Robot (short for "kinematics") was designed to teach members of the American Society of Mechanical Engineers (ASME) about robotics. The workshop includes, but is not limited to basic motor control, basic circuitry, programming, and concepts of forward and inverse kinematics in robotics. Students control the robot using coordinate input or joysticks. Since each workshop enrolls 15 members on average, the KIN Robot was designed to be affordable, consisting of very few parts. </p>
                 <div id="Introduction-img-container">
-                    <div id="Introduction-img"><img src="Introduction-1.png" alt="" class="Introduction-img-style"></div>
-                    <div id="Introduction-img"><img src="Introduction-2 - REDD_Robot.png" alt="" class="Introduction-img-style"></div>
-                    <div id="Introduction-img"><img src="Introduction-3 - REDD_Robot.png" alt="" class="Introduction-img-style"></div>
+                    <div id="Introduction-img"><img src="KIN-introduction-2.png" alt="" class="Introduction-img-style"></div>
+                    <div id="Introduction-img"><img src="KIN-introduction-3.png" alt="" class="Introduction-img-style"></div>
+                    <div id="Introduction-img"><img src="KIN-introduction-4.png" alt="" class="Introduction-img-style"></div>
                 </div>
             </div>
+
             <div id="Design" class="contents">
                 <div id="Design-content">
-                    <h2 id="h2-style">Design</h2>
-                    <p class="p-style">The overall design of the robot has to house all critical components, which include but are not limited to:</p>
-                    <ol id="Design-ol">
-                        <li class="Design-li">Raspberry Pi</li>
-                        <li class="Design-li">Arduino Nano</li>
-                        <li class="Design-li">Motor drivers</li>
-                        <li class="Design-li">Basic Circuitry</li>
-                        <li class="Design-li">Battery</li>
-                        <li class="Design-li">Motors</li>
-                        <li class="Design-li">Webcam</li>
-                    </ol>
-                    <p class="p-style">All the components fit in the main assembly as displayed in the images below. One design obstacle was to reverse engineer the webcam housing in order to integrate an existing Dynex webcam into the robot.</p>
+                    <h2 id="h2-style">Mechanical Design</h2>
+                    <p class="p-style">The KIN Robot is laser cut out of acrylic, only taking up 23 X 23 cm. Acrylic was chosen because it is readily available and easy to cut with a laser cnc machine. In addition, acrylic is smooth compared to other materials, resulting in low friction when parts are in contact. Once the parts are cut, the robot is assembled using select nuts and bolts. The robot is driven by small hobby servo motors and controlled by an Arduino microcontroller. The overall assembly requires very little wiring since a lot of the components like the servos have integrated circuits.</p>
                 </div>
                 <div id="Design-img-container">
-                    <div id="Design-img"> <img src="Design-1.png" alt="" class="content-img-style"></div>
-                    <div id="Design-img"> <img src="Design-2.png" alt="" class="content-img-style"></div>
+                    <div id="Design-img"> <img src="KIN-design-1.png" alt="" class="content-img-style"></div>
+                    <div id="Design-img"> <img src="KIN-design-3.png" alt="" class="content-img-style"></div>
+                    <div id="Design-img"> <img src="KIN-design-2.png" alt="" class="content-img-style"></div>
                 </div>
             </div>
-            <div id="Program" class="contents">
-                <div id="Program-content">
-                    <h2 id="h2-style">OpenCV</h2>
-                    <p class="p-style">Computers cannot process images like humans do. There are many methods for getting a computer to recognize people, objects, and different colors. OpenCV offers a large library for image processing in python. For this project, any color ball can be used. However, it is easier to detect a ball whose color stands out from its background. There are a set of filters that are applied below to detect the ball:</p>
-                    <ol id="Program-ol">
-                        <li class="Program-li">The first filter sets the image to an HSV scale, which stands for Hue, Saturation and Value. Each color has a different representation for those 3 values. For example, a green object can have the HSV set as (0,128,0) where H is 0, S is 128 and V is 0. </li>
-                        <li class="Program-li">Once the HSV values are determined, the values are used in the program to isolate the determined color from the rest of the image. A filter is applied to convert the image to black and white. </li>
-                        <li class="Program-li">Once an image is black and white, the computer will run through each individual pixel in the image and determine which pixels contain the object. The object will be denoted by white and the background will be black. Once the computer has processed the image, it will draw a circle based on the edges of the ball left by the black and white image. </li>
-                        <li class="Program-li">The computer will obtain the center of the by using the equation of a circle and solving for both variables for the vertical and horizontal position. Since horizontal position of the ball is needed, that is the variable that will be used in the program.</li>
-                    </ol>
-                </div>
-                <div id="Program-img-container">
-                    <div id="Program-img"><img src="Program-1.png" alt="" class="content-img-style"></div>
-                    <div id="Program-img"><img src="Program-2.png" alt="" class="content-img-style"></div>
-                </div>
-            </div>
-            <div id="Controls" class="contents">
-                <div id="Controls-content">
-                    <h2 id="h2-style">Contols</h2>
-                    <p class="p-style">Computers cannot process images like humans do. There are many methods for getting a computer to recognize people, objects, and different colors. OpenCV offers a large library for image processing in python. For this project, any color ball can be used. However, it is easier to detect a ball whose color stands out from its background. There are a set of filters that are applied below to detect the ball:</p>
 
-                </div>
-                <div id="Controls-img"><img src="Controls-1.png" alt="" class="content-img-style"></div>
-            </div>
-        </div>
+
+        <center><div style="height: fit-content; display: flex; justify-content: center; align-items: center;"><a href=""  class="code-link">Get code on GitHub</a></div></center>
+
     </section>
 
     <footer id="Footer">
-        <h3 id="h3-style">Let's chat</h3>
+        <h3 id="h3-style">Let's chat.</h3>
         <div id="social-media">
-            <a href="https://www.linkedin.com/in/jonathan-freier-2b8013171" class="social-media-buttons" target="_blank">LinkedIn</a>
-            <a href="mailto:freierjohn1993@gmail.com" class="social-media-buttons" target="_blank">Email</a> 
-            <a id="profile-link" href="https://github.com/JonFrei" class="social-media-buttons" target="_blank">GitHub</a>         
+            <a href="https://www.linkedin.com/in/jonathan-freier-2b8013171" class="social-media-style" target="_blank">LinkedIn</a>
+            <a href="mailto:freierjohn1993@gmail.com" class="social-media-style" target="_blank">Email</a> 
+            <a id="profile-link" href="https://github.com/JonFrei" class="social-media-style" target="_blank">GitHub</a>          
         </div>
     </footer>
 </body>

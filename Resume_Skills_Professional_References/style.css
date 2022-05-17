@@ -13,10 +13,6 @@
 }
 
 html, body{
-    /*max-width: 100%!important;
-    overflow-x: hidden!important;
-    left: 0px!important;
-    right: 0px!important;*/
     overflow-x: hidden!important;
 }
 
@@ -25,13 +21,7 @@ body{
 
     margin: 0px;
     padding: 0px;
-/*
-    height: 100%;
-    width: 100%;
-*/
-/*
-    position: absolute;
-    */
+
     left: 0px;
     right: 0px;
 }
@@ -97,14 +87,13 @@ body{
     justify-content: space-between;
     align-items: center;
 
-    gap: 5vw;
-
     height: 50px;
 
     box-sizing: border-box;
 }
 
 .nav-item{
+    padding: 0px 20px;
     text-align: center;
     
     transition: 0.7s ease;
@@ -651,7 +640,9 @@ hr{
 
         flex-direction: column;
         justify-content: flex-start;
+        
         text-align: center;
+
         transition: 0.3s;
         
         padding: 0px;
@@ -921,4 +912,4 @@ hr{
     
         z-index: 2;
     }
-}
+ }
