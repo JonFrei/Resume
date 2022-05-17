@@ -37,7 +37,7 @@
         <div id="main-content">
             <div id="Introduction">
                 <h2 id="Introduction-style">Introduction</h2>
-                <p class="p-style Introduction-p-style">The purpose of this project is to build a robot that will track and follow a ball of a specified color. In order to achieve this goal, basic principles of computer vision and control systems are applied to detect, follow and correct the path of the robot as it approaches the pre-determined object. The robot is powered by a Raspberry Pi and Arduino Nano. The Raspberry Pi uses a webcam to capture video and applies a set of filters using OpenCV library to detect and track the location of the ball. The data is transferred to the Arduino Nano, which receives the data and uses a closed loop feedback to control the robot.</p>
+                <p class="p-style Introduction-p-style">The purpose of this project is to build a robot that will track and follow a ball of a specified color. Basic principles of computer vision and control systems are applied to detect, follow and correct the path of the robot as it approaches a pre-determined object. The robot is powered by a Raspberry Pi and Arduino Nano. The Raspberry Pi uses a webcam to capture video and applies a set of filters using OpenCV library to detect and track the location of the ball. The data is transferred to the Arduino Nano, which receives the data and uses a closed loop feedback to control the robot.</p>
                 <div id="Introduction-img-container">
                     <div id="Introduction-img"><img src="Introduction-1.png" alt="" class="Introduction-img-style"></div>
                     <div id="Introduction-img"><img src="Introduction-2 - REDD_Robot.png" alt="" class="Introduction-img-style"></div>
@@ -58,7 +58,7 @@
                         <li class="Design-li">Motors</li>
                         <li class="Design-li">Webcam</li>
                     </ol>
-                    <p class="p-style">All the components fit in the main assembly as displayed in the images below. One design obstacle was to reverse engineer the webcam housing in order to integrate an existing Dynex webcam into the robot.</p>
+                    <p class="p-style">All the components fit in the main assembly as displayed in the images below. One design obstacle was to reverse engineer the webcam housing in order to integrate an existing Dynex webcam into the robot. Since this robot is able to do a 0-point turn, another design  consideration is to  place the camera as close to the axis  on a vertical plane and parallel the wheel’s axis of rotation. This ensure that when the robot attempts to turn to correct it’s path, it does not over-correct.</p>
                 </div>
                 <div id="Design-img"> <img src="Design-1.png" alt="" class="content-img-style"></div>
             </div>
