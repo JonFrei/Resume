@@ -706,6 +706,7 @@ hr{
 
     .nav-link{
         font-size: 1.1em;
+        color: var(--Color5);
     }
 
     /* Hamburger icon */
