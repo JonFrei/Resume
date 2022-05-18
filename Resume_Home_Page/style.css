@@ -161,7 +161,7 @@ body{
 .nav-link{
     font-family: 'Roboto Mono', monospace;
     color: white;
-    font-size: 2vw;
+    font-size: 1.2em;
     /*
     -webkit-text-stroke-width: 10%;
     -webkit-text-stroke-color: var(--Color2);
