@@ -648,8 +648,8 @@ hr{
         padding: 0px;
         margin: 0px;
 
-        width: 0px;
-        height: 25vh;
+        width: 100%;
+        height: auto;
 
         
     }
@@ -706,7 +706,7 @@ hr{
 
     .nav-link{
         font-size: 1.1em;
-        color: var(--Color5);
+        color: white;
     }
 
     /* Hamburger icon */
@@ -855,37 +855,6 @@ hr{
     
 }
 
-
-/*
-@media screen and (max-width: 600px) {
-    .left::after{
-        content:'';
-        position: absolute;
-        background-color: var(--Color5);
-        width: 13vw;
-        height: 2px;
-    
-        left: 100%;
-        top: 60px;
-    
-        z-index: 2;
-    }
-    
-    .right::after{
-        content:'';
-        position: absolute;
-        background-color: var(--Color5);
-        width: 13vw;
-        height: 2px;
-    
-        right: 100%;
-        top: 60px;
-    
-        z-index: 2;
-    }
-    
-}
-*/
 
 @media screen and (max-width: 370px) {
     .left::after{
