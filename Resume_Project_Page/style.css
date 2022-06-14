@@ -138,6 +138,8 @@ body{
 
 #projects-grid{
 
+    box-sizing: border-box;
+
     width: 100%;
     height: auto;
     min-height: 100vh;
@@ -145,6 +147,7 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+
     flex-wrap: wrap;
     gap: 3vw;
 
@@ -152,18 +155,20 @@ body{
     margin-left: 3vw;
     margin-top: 75px;
 
+    padding-top: 10vh;
+
     padding-bottom: 1.4em;
 
 }
 
 .project{
-    width: auto;
+    width: 30vw;
     min-width:300px;
-    max-width: 500px;
+    max-width: 30vw;
 
     height: fit-content;
     min-height: 225px;
-    max-height: 500px;
+    max-height: auto;
 
 
     display: flex;
@@ -415,7 +420,12 @@ body{
     }
 
     .project{
-        font-size: 3vw;
+        font-size: 4vw;
+
+        width: 80vw;
+        max-width: 80vw;
+        min-width: unset;
+
         height: auto;
     }
     
@@ -426,7 +436,8 @@ body{
     }
 
     .project-title{
-        height: 75px;
+        min-height: auto;
+        
     }
     
     .h3-style{
