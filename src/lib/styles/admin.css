@@ -1,0 +1,295 @@
+/* admin.css — styling for the /admin area. Reuses base.css design tokens. */
+
+.admin-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 clamp(1rem, 4vw, 2rem);
+    height: var(--nav-height);
+    background: var(--accent);
+    color: var(--text-on-accent);
+}
+
+.admin-header__brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-on-accent);
+}
+
+.admin-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.admin-header__nav a {
+    color: var(--bg-deep);
+    font-weight: 700;
+}
+
+.admin-header__nav a:hover {
+    color: var(--text-on-accent);
+}
+
+.admin-header__logout {
+    font-family: var(--font);
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--bg-deep);
+    color: var(--text);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.4rem 0.9rem;
+}
+
+.admin-header__logout:hover {
+    background: var(--jungle-green);
+}
+
+.admin-main {
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-light) 120%);
+    color: var(--text);
+}
+
+.admin-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vh, 3rem) clamp(1rem, 4vw, 2rem) 4rem;
+}
+
+.admin-title {
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+}
+
+.admin-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* --- Project list --- */
+.plist {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    list-style: none;
+}
+
+.pitem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+}
+
+.pitem__thumb {
+    width: 72px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: var(--jungle-green);
+    flex-shrink: 0;
+}
+
+.pitem__meta {
+    flex: 1;
+    min-width: 0;
+}
+
+.pitem__title {
+    font-size: 1.1rem;
+    color: var(--text);
+    margin: 0;
+}
+
+.pitem__sub {
+    margin: 0.2rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.pitem__badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--bg-deep);
+    color: var(--text);
+    margin-left: 0.5rem;
+}
+
+.pitem__actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* --- Forms --- */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.field label {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+.field .hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.input,
+.textarea,
+.select {
+    font-family: var(--font);
+    font-size: 0.95rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: var(--radius);
+    border: 2px solid var(--accent);
+    background: var(--bg-deep);
+    color: var(--text);
+    width: 100%;
+}
+
+.textarea {
+    min-height: 5rem;
+    resize: vertical;
+}
+
+.row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+}
+
+.fieldset {
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background: rgba(9, 82, 86, 0.15);
+}
+
+.fieldset legend {
+    font-weight: 700;
+    padding: 0 0.5rem;
+    color: var(--text);
+}
+
+.block-card {
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.block-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.actions-bar {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    min-height: 0;
+    font-size: 0.85rem;
+}
+
+.btn-danger {
+    border-color: #d16a6a;
+    color: #ffd7d7;
+}
+
+.btn-danger:hover {
+    background: #b23b3b;
+    border-color: #b23b3b;
+    color: #fff;
+}
+
+.flash {
+    border-radius: var(--radius);
+    padding: 0.6rem 0.9rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.flash--ok {
+    background: rgba(90, 170, 149, 0.3);
+    border: 1px solid var(--pine);
+    color: #eaffea;
+}
+
+.flash--err {
+    background: rgba(180, 30, 30, 0.35);
+    border: 1px solid #d16a6a;
+    color: #ffd7d7;
+}
+
+.thumb-preview {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 2px solid var(--accent);
+    background: var(--jungle-green);
+}
+
+.uploader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3rem 1rem;
+}
+
+@media (max-width: 640px) {
+    .row-2 {
+        grid-template-columns: 1fr;
+    }
+}

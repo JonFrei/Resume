@@ -1,0 +1,211 @@
+<script>
+    import Nav from "$lib/components/Nav.svelte";
+    import Footer from "$lib/components/Footer.svelte";
+    import resume from "$lib/data/resume.json";
+</script>
+
+<svelte:head>
+    <title>Resume — Jonathan Freier</title>
+    <meta name="description" content="Resume of Jonathan Freier — Controls Engineer. Skills, certifications, and professional experience." />
+</svelte:head>
+
+<Nav />
+
+<main class="page resume">
+    <div class="resume__layout">
+        <aside class="resume__nav" aria-label="Section navigation">
+            <ul class="jump">
+                <li><a class="jump__link" href="#skills">Skills</a></li>
+                {#each resume.experience as job}
+                    <li><a class="jump__link" href={`#${job.id}`}>{job.company}</a></li>
+                {/each}
+            </ul>
+        </aside>
+
+        <div class="resume__content">
+            <section id="skills" class="section">
+                <h2 class="section__title">Skills</h2>
+                <div class="skills">
+                    {#each resume.skills as group}
+                        <div class="skills__group">
+                            <h3 class="skills__heading">{group.heading}</h3>
+                            <ul class="skills__list" class:skills__list--tags={group.style === "tags"}>
+                                {#each group.items as item}
+                                    {#if typeof item === "string"}
+                                        <li>{item}</li>
+                                    {:else}
+                                        <li>{item.text} <span class="skills__tag">{item.tag}</span></li>
+                                    {/if}
+                                {/each}
+                            </ul>
+                        </div>
+                    {/each}
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section__title">Professional Experience</h2>
+                {#each resume.experience as job}
+                    <article id={job.id} class="job">
+                        <h3 class="job__company">{job.company}</h3>
+                        {#each job.roles as role}
+                            <div class="job__role">
+                                <p class="job__title">{role.title}</p>
+                                <p class="job__dates">{role.dates}</p>
+                            </div>
+                            <ul class="job__points">
+                                {#each role.points as pt}<li>{pt}</li>{/each}
+                            </ul>
+                        {/each}
+                    </article>
+                {/each}
+            </section>
+        </div>
+    </div>
+</main>
+
+<Footer heading="How would you like to connect?" />
+
+<style>
+    .resume {
+        background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-light) 100%);
+        min-height: 100vh;
+        padding-top: var(--nav-height);
+    }
+    .resume__layout {
+        max-width: var(--content-max);
+        margin: 0 auto;
+        padding: clamp(1.5rem, 4vh, 3rem) clamp(1rem, 4vw, 2.5rem) clamp(3rem, 8vh, 5rem);
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: clamp(1.5rem, 4vw, 3rem);
+        align-items: start;
+    }
+    .resume__nav {
+        position: sticky;
+        top: calc(var(--nav-height) + 1.5rem);
+    }
+    .jump {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        border-left: 3px solid var(--accent);
+    }
+    .jump__link {
+        display: block;
+        padding: 0.55rem 1rem;
+        color: var(--bg-deep);
+        font-weight: 700;
+        transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
+    }
+    .jump__link:hover,
+    .jump__link:focus-visible {
+        background: var(--bg-deep);
+        color: var(--text);
+    }
+    .section {
+        margin-bottom: clamp(2.5rem, 6vh, 4rem);
+    }
+    .section__title {
+        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        color: var(--text);
+        padding-bottom: 0.4rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 3px solid var(--accent);
+    }
+    .skills {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .skills__group {
+        background: rgba(9, 82, 86, 0.15);
+        border-radius: var(--radius);
+        padding: 1rem 1.25rem;
+    }
+    .skills__heading {
+        font-size: 1.15rem;
+        color: var(--bg-deep);
+        padding-bottom: 0.4rem;
+        margin-bottom: 0.75rem;
+        border-bottom: 2px solid var(--accent);
+    }
+    .skills__list {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 0.4rem 1.5rem;
+        color: var(--text);
+    }
+    .skills__list--tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 0.75rem;
+    }
+    .skills__list--tags li {
+        background: var(--bg-deep);
+        color: var(--text);
+        padding: 0.3rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.9rem;
+    }
+    .skills__tag {
+        display: inline-block;
+        margin-left: 0.5rem;
+        padding: 0.1rem 0.6rem;
+        background: var(--accent);
+        color: var(--text-on-accent);
+        border-radius: 999px;
+        font-size: 0.75rem;
+    }
+    .job {
+        margin-bottom: 2.5rem;
+        scroll-margin-top: calc(var(--nav-height) + 1rem);
+    }
+    .job__company {
+        font-size: 1.5rem;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+    }
+    .job__role {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.25rem 1rem;
+        margin-top: 1rem;
+        color: var(--bg-deep);
+        font-weight: 700;
+    }
+    .job__role p {
+        margin: 0;
+    }
+    .job__points {
+        margin: 0.6rem 0 0;
+        padding-left: 1.4rem;
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    @media (max-width: 768px) {
+        .resume__layout {
+            grid-template-columns: 1fr;
+        }
+        .resume__nav {
+            position: static;
+        }
+        .jump {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            border-left: none;
+        }
+        .jump__link {
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+    }
+</style>

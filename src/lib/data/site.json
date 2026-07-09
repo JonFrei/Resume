@@ -1,0 +1,23 @@
+{
+  "brand": "Jonathan Freier",
+  "nav": [
+    { "label": "Home", "href": "/" },
+    { "label": "Resume", "href": "/resume/" },
+    { "label": "Projects", "href": "/projects/" },
+    { "label": "Contact", "href": "#contact" }
+  ],
+  "social": [
+    { "label": "LinkedIn", "href": "https://www.linkedin.com/in/jonathan-freier-2b8013171", "external": true },
+    { "label": "Email", "href": "mailto:freierjohn1993@gmail.com", "external": false },
+    { "label": "GitHub", "href": "https://github.com/JonFrei", "external": true }
+  ],
+  "hero": {
+    "name": "Jonathan Freier",
+    "subtitle": "Controls Engineer & Developer",
+    "links": [
+      { "label": "LinkedIn", "href": "https://www.linkedin.com/in/jonathan-freier-2b8013171", "img": "/assets/img/linkedin-logo.png", "external": true },
+      { "label": "GitHub", "href": "https://github.com/JonFrei", "img": "/assets/img/github-logo.png", "external": true },
+      { "label": "Email", "href": "mailto:freierjohn1993@gmail.com", "img": "/assets/img/gmail-logo.png", "external": false }
+    ]
+  }
+}

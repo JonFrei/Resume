@@ -1,81 +1,76 @@
 # jonathan-freier.com — Portfolio
 
-Personal portfolio for Jonathan Freier. Static site served from clean,
-relative paths with a single centralized design system.
+Personal portfolio for Jonathan Freier. A **SvelteKit** app (SSR) with a
+password-protected admin CMS. Projects live in **Postgres**, images in
+**Cloudflare R2**, deployed on **Railway**.
 
 ## Structure
 
 ```
-/
-├── index.html              # Home
-├── resume/index.html       # Resume — skills + experience
-├── projects/
-│   ├── index.html          # Projects grid
-│   ├── redd-robot/         # Project detail pages
-│   └── kin-robot/
-├── assets/
-│   ├── css/
-│   │   ├── base.css        # Design tokens, reset, nav, footer, buttons (shared)
-│   │   ├── home.css
-│   │   ├── resume.css
-│   │   ├── projects.css
-│   │   └── project-detail.css   # Shared by every project page
-│   ├── js/nav.js           # Shared mobile-nav toggle
-│   └── img/                # All images (project thumbs + per-project folders)
-├── CNAME                   # jonathan-freier.com
-└── README.md
+src/
+├── app.html                     # HTML shell
+├── hooks.server.js              # boot schema + per-request auth
+├── lib/
+│   ├── styles/base.css          # design tokens + shared component classes
+│   ├── styles/admin.css         # admin styling
+│   ├── assets.js                # assetUrl() — prepends ASSET_BASE_URL
+│   ├── data/{site,resume}.json  # static content (nav, hero, resume)
+│   ├── components/              # Nav, Footer, ProjectBlock, admin/*
+│   └── server/                  # config, db, auth, r2, projectForm
+└── routes/
+    ├── +page.svelte             # Home
+    ├── resume/                  # Resume
+    ├── projects/                # Grid + [slug] detail (from DB)
+    ├── data/projects.json/      # JSON endpoint (from DB, back-compat)
+    └── admin/                   # Login + project CRUD + image upload
+static/
+├── assets/img/                  # images (also mirrored to R2)
+├── data/projects.json           # DB seed source
+└── CNAME
+scripts/                         # seed-db, hash-password, upload-r2
+_legacy/                         # pre-Phase-4 vanilla app (reference; removable)
 ```
 
-## Conventions
+## Content model
 
-- **One design system.** All shared styling (colors, nav, footer, buttons)
-  lives in `assets/css/base.css` via CSS custom properties. Page stylesheets
-  only add page-specific rules and are loaded after `base.css`.
-- **Relative links.** No hardcoded absolute URLs — the site is portable
-  between hosts.
-- **Repeatable project shape.** Project detail pages use a consistent
-  hero + content-`block` structure so they can be generated from a project
-  JSON schema in a later phase.
+- **Projects** — stored in Postgres (`projects` table). Frequently-queried
+  fields are columns; the nested hero/blocks structure is a `content` jsonb.
+  Managed via `/admin`. Falls back to `static/data/projects.json` with no DB.
+- **Resume / site** — static JSON in `src/lib/data/` (edited in code for now).
+- **Images** — referenced by `/assets/img/...`; `assetUrl()` prepends
+  `ASSET_BASE_URL` so they resolve from R2 (`cdn.jonathan-freier.com`) in prod.
 
-## Data-driven content
+## Admin
 
-Pages ship a thin HTML shell and render from JSON in `/data`:
-
-- `data/site.json` — brand, nav, social/contact links, home hero
-- `data/projects.json` — the grid **and** every detail page (canonical shape)
-- `data/resume.json` — skills + experience
-
-Renderers live in `assets/js/` (`site.js` shared helpers + one `page-*.js` per
-page). Images are referenced by relative `/assets/img/...` paths; the renderer
-prepends `ASSET_BASE_URL` (from the server's `/config.js`) so they can be flipped
-to a CDN with one env var.
-
-### Adding a project
-
-1. Add an object to `data/projects.json` (see the shape of `redd-robot`).
-2. If it has a detail page, create `projects/<slug>/index.html` as a 2-line
-   shell with `data-slug="<slug>"` (copy an existing one).
-
-## Backend
-
-`server.js` (Express) serves the static site + JSON, injects `ASSET_BASE_URL`
-via `/config.js`, and runs on Railway. See **[SETUP.md](SETUP.md)** for the full
-Railway + Cloudflare R2 deployment walkthrough.
-
-## Roadmap
-
-1. ✅ **Cleanup & restructure** — centralized styling, clean paths, valid markup.
-2. ✅ **Data-driven content** — project/resume JSON schema; pages render from it.
-3. ✅ **Backend on Railway + R2** — Express server, `ASSET_BASE_URL` image switch,
-   R2 upload script. (Deploy via SETUP.md.)
-4. **Next:** an admin UI to add/edit projects (write to the JSON / a DB).
+`/admin` (password-protected) — create/edit/delete projects, edit the block
+structure, and upload images (which go to R2). See **[PHASE4.md](PHASE4.md)**.
 
 ## Local development
 
-```
+```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev            # http://localhost:5173
 ```
 
-The site also runs as plain static files (e.g. GitHub Pages); when `/config.js`
-is absent, images fall back to local `/assets/img` paths.
+Without `DATABASE_URL`, the site reads the seed JSON (read-only). For admin, set
+the env vars in `.env` (see `.env.example`) and point at a Postgres.
+
+Production build:
+
+```bash
+npm run build && npm start     # node build/index.js
+```
+
+## Roadmap
+
+1. ✅ Cleanup & restructure (centralized styling, clean paths)
+2. ✅ Data-driven content (JSON schema)
+3. ✅ Backend on Railway + Cloudflare R2 images
+4. ✅ SvelteKit rewrite + admin CMS (Postgres) — deploy per PHASE4.md
+5. **Next:** resume editing in admin; drag-reorder; project preview
+
+## Deployment
+
+`origin/main` → Railway (`npm run build` → `node build/index.js`).
+Full deploy walkthrough: **[PHASE4.md](PHASE4.md)**. R2/Cloudflare setup:
+**[SETUP.md](SETUP.md)**.

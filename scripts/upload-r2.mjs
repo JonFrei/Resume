@@ -31,7 +31,7 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-const IMG_DIR = path.join(ROOT, "assets", "img");
+const IMG_DIR = path.join(ROOT, "static", "assets", "img");
 
 const DRY_RUN = process.argv.includes("--dry-run");
 
