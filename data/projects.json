@@ -1,0 +1,157 @@
+{
+  "projects": [
+    {
+      "slug": "redd-robot",
+      "title": "REDD Robot",
+      "tagline": "Python · C++ · OpenCV · Raspberry Pi · Arduino",
+      "thumb": "/assets/img/project-1.png",
+      "detail": true,
+      "hero": {
+        "lead": "The purpose of this project is to build a robot that tracks and follows a ball of a specified color. Basic principles of computer vision and control systems are applied to detect, follow, and correct the robot's path as it approaches a pre-determined object. The robot is powered by a Raspberry Pi and an Arduino Nano. The Raspberry Pi uses a webcam to capture video and applies a set of OpenCV filters to detect and track the ball. That data is transferred to the Arduino Nano, which uses closed-loop feedback to control the robot.",
+        "gallery": [
+          { "src": "/assets/img/redd-robot/introduction-1.png", "alt": "REDD Robot assembled" },
+          { "src": "/assets/img/redd-robot/introduction-2.png", "alt": "REDD Robot side view" },
+          { "src": "/assets/img/redd-robot/introduction-3.png", "alt": "REDD Robot detail" }
+        ]
+      },
+      "blocks": [
+        {
+          "heading": "Design",
+          "layout": "left",
+          "body": [
+            "The overall design of the robot has to house all critical components, which include but are not limited to:"
+          ],
+          "list": {
+            "ordered": true,
+            "items": [
+              "Raspberry Pi",
+              "Arduino Nano",
+              "Motor drivers",
+              "Basic circuitry",
+              "Battery",
+              "Motors",
+              "Webcam"
+            ]
+          },
+          "bodyAfter": [
+            "All components fit in the main assembly shown here. One design obstacle was reverse-engineering the webcam housing to integrate an existing Dynex webcam into the robot. Because this robot can do a zero-point turn, another consideration was placing the camera as close as possible to the axis on a vertical plane, parallel to the wheels' axis of rotation. This ensures the robot does not over-correct when adjusting its path."
+          ],
+          "media": [
+            { "src": "/assets/img/redd-robot/design-1.png", "alt": "REDD Robot design assembly" }
+          ]
+        },
+        {
+          "heading": "OpenCV",
+          "layout": "right",
+          "body": [
+            "Computers cannot process images like humans do. OpenCV offers a large library for image processing in Python. Any color ball can be used, but it is easier to detect one whose color stands out from its background. The following filters are applied to detect the ball:"
+          ],
+          "list": {
+            "ordered": true,
+            "items": [
+              "Convert the image to HSV (Hue, Saturation, Value). Each color has a distinct HSV representation.",
+              "Use the HSV values to isolate the target color, converting the image to black and white.",
+              "Scan each pixel to determine which belong to the object (white) versus background (black), then draw a circle around the detected edges.",
+              "Find the center of the ball using the equation of a circle, solving for horizontal position — the variable used by the control program."
+            ]
+          },
+          "mediaRow": true,
+          "media": [
+            { "src": "/assets/img/redd-robot/program-1.png", "alt": "OpenCV filter step 1" },
+            { "src": "/assets/img/redd-robot/program-2.png", "alt": "OpenCV filter step 2" },
+            { "src": "/assets/img/redd-robot/program-3.png", "alt": "OpenCV filter step 3" }
+          ]
+        },
+        {
+          "heading": "Controls",
+          "layout": "left",
+          "body": [
+            "A closed-loop feedback system makes the corrective measurements required for the robot to perform its task. The most basic components of a feedback loop are the controller, the plant, and the sensor. The controller is the Raspberry Pi that takes in data and does all required processing. The plant is the device being controlled — the robot. The sensor is the camera, which takes information from the outside world and converts it into data the computer can use. For a basic PID controller there are three tuning parameters — Proportional, Integral, and Derivative. For this robot, only the proportional and derivative parameters are needed to correct direction."
+          ],
+          "media": [
+            { "src": "/assets/img/redd-robot/controls-1.png", "alt": "Closed-loop control diagram" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "kin-robot",
+      "title": "KIN Robot",
+      "tagline": "C++ · Arduino · Kinematics",
+      "thumb": "/assets/img/project-2.png",
+      "detail": true,
+      "codeUrl": "https://github.com/JonFrei/KIN_Robot",
+      "hero": {
+        "lead": "The KIN Robot (short for \"kinematics\") was designed to teach members of the American Society of Mechanical Engineers (ASME) about robotics. The workshop covers basic motor control, circuitry, programming, and the concepts of forward and inverse kinematics. Students control the robot using coordinate input or joysticks. Because each workshop enrolls about 15 members, the KIN Robot was designed to be affordable, consisting of very few parts.",
+        "gallery": [
+          { "src": "/assets/img/kin-robot/introduction-1.png", "alt": "KIN Robot assembled" },
+          { "src": "/assets/img/kin-robot/introduction-2.png", "alt": "KIN Robot in use" },
+          { "src": "/assets/img/kin-robot/introduction-3.png", "alt": "KIN Robot detail" }
+        ]
+      },
+      "blocks": [
+        {
+          "heading": "Mechanical Design",
+          "layout": "left",
+          "body": [
+            "The KIN Robot is laser-cut out of acrylic, taking up only 23 × 23 cm. Acrylic was chosen because it is readily available and easy to cut with a laser CNC machine. It is also smooth compared to other materials, resulting in low friction where parts contact one another. Once the parts are cut, the robot is assembled using select nuts and bolts. It is driven by small hobby servo motors and controlled by an Arduino microcontroller. The overall assembly requires very little wiring since components like the servos have integrated circuits."
+          ],
+          "mediaRow": true,
+          "media": [
+            { "src": "/assets/img/kin-robot/design-1.png", "alt": "KIN Robot design 1" },
+            { "src": "/assets/img/kin-robot/design-3.png", "alt": "KIN Robot design 2" },
+            { "src": "/assets/img/kin-robot/design-2.png", "alt": "KIN Robot design 3" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "portfolio-website",
+      "title": "Portfolio Website",
+      "tagline": "HTML · CSS · JS",
+      "thumb": "/assets/img/project-3.png",
+      "detail": false,
+      "url": "https://github.com/JonFrei"
+    },
+    {
+      "slug": "snake-game",
+      "title": "Snake Game",
+      "tagline": "C++",
+      "thumb": "/assets/img/project-4.png",
+      "detail": false,
+      "url": "https://github.com/JonFrei/SnakeGame"
+    },
+    {
+      "slug": "calculator",
+      "title": "Calculator",
+      "tagline": "HTML · CSS · React",
+      "thumb": "/assets/img/project-5.png",
+      "detail": false,
+      "url": "https://jonfrei.github.io/calculator/"
+    },
+    {
+      "slug": "quote-generator",
+      "title": "Quote Generator",
+      "tagline": "HTML · CSS · React",
+      "thumb": "/assets/img/project-6.png",
+      "detail": false,
+      "url": "https://jonfrei.github.io/quote_machine/"
+    },
+    {
+      "slug": "drum-machine",
+      "title": "Drum Machine",
+      "tagline": "HTML · CSS · React",
+      "thumb": "/assets/img/project-7.png",
+      "detail": false,
+      "url": "https://jonfrei.github.io/drum-machine/"
+    },
+    {
+      "slug": "pomodoro-clock",
+      "title": "Pomodoro Clock",
+      "tagline": "HTML · CSS · React",
+      "thumb": "/assets/img/project-8.png",
+      "detail": false,
+      "url": "https://jonfrei.github.io/25-5-clock/"
+    }
+  ]
+}

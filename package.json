@@ -1,0 +1,21 @@
+{
+  "name": "jonfrei-portfolio",
+  "version": "1.0.0",
+  "description": "Personal portfolio for Jonathan Freier (jonathan-freier.com)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "upload:r2": "node scripts/upload-r2.mjs"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-s3": "^3.600.0"
+  }
+}

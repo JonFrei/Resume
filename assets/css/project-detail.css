@@ -1,0 +1,152 @@
+/* project-detail.css — shared layout for every individual project page.
+   The markup is intentionally repeatable so pages can be generated from a
+   project JSON shape later:
+     project = { title, tagline, hero[], blocks[], codeUrl }
+     block   = { heading, body[], media[], layout: 'left'|'right'|'full' }
+*/
+
+.project-detail {
+    background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-light) 100%);
+    min-height: 100vh;
+}
+
+.project-detail__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: clamp(2rem, 6vh, 4rem) clamp(1.25rem, 4vw, 2.5rem)
+             clamp(3rem, 8vh, 5rem);
+}
+
+/* Back link */
+.project-detail__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+    color: var(--bg-deep);
+    font-weight: 700;
+    transition: color var(--speed) var(--ease);
+}
+
+.project-detail__back:hover {
+    color: var(--accent-dark);
+}
+
+/* --- Hero / intro --- */
+.project-hero__title {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--text);
+}
+
+.project-hero__tagline {
+    margin: 0.75rem 0 1.5rem;
+    color: var(--bg-deep);
+    font-weight: 700;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+
+.project-hero__lead {
+    color: var(--text);
+    font-size: 1.05rem;
+    max-width: 70ch;
+}
+
+.project-hero__gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.project-hero__gallery img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+}
+
+/* --- Content blocks --- */
+.block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.25rem, 4vw, 2.5rem);
+    align-items: center;
+
+    margin: clamp(2rem, 6vh, 4rem) 0;
+}
+
+/* Alternate image side */
+.block--right .block__media {
+    order: 2;
+}
+
+.block--full {
+    grid-template-columns: 1fr;
+}
+
+.block__heading {
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    color: var(--text);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+    border-bottom: 3px solid var(--accent);
+}
+
+.block__body {
+    color: var(--text);
+    font-size: 1.02rem;
+}
+
+.block__body p {
+    margin: 0 0 1rem;
+}
+
+.block__list {
+    margin: 0 0 1rem;
+    padding-left: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    color: var(--text);
+}
+
+.block__media {
+    display: grid;
+    gap: 1rem;
+}
+
+.block__media img {
+    width: 100%;
+    object-fit: cover;
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* Multi-image media stacks side by side when there's room */
+.block__media--row {
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+}
+
+/* --- Code link --- */
+.project-detail__code {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2rem, 6vh, 3rem);
+}
+
+@media (max-width: 768px) {
+    .block {
+        grid-template-columns: 1fr;
+    }
+
+    .block--right .block__media {
+        order: 0;
+    }
+
+    .block__media--row {
+        grid-auto-flow: row;
+    }
+}
