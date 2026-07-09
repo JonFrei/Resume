@@ -236,7 +236,7 @@
 
 <svelte:head><title>Resume — Admin</title></svelte:head>
 
-<div class="admin-wrap admin-wrap--wide">
+<div class="admin-wrap admin-wrap--wide resume-editor">
     <div class="admin-row">
         <h1 class="admin-title">Resume</h1>
         <a class="btn btn-sm" href="/admin">← Back</a>
@@ -402,6 +402,15 @@
 </div>
 
 <style>
+    /* Full-bleed override: the shared .admin-wrap--wide caps at 1160px and adds
+       side padding — drop both here so the editing canvas can use the whole
+       viewport for an accurate, roomy view of the live layout. */
+    .resume-editor {
+        max-width: none;
+        padding-left: clamp(0.75rem, 2vw, 1.5rem);
+        padding-right: clamp(0.75rem, 2vw, 1.5rem);
+    }
+
     .editor-hint { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem; }
 
     /* =====================================================================
@@ -415,7 +424,8 @@
         background: linear-gradient(180deg, var(--bg-page-start) 0%, var(--bg-page-end) 100%);
     }
     .resume__split {
-        max-width: var(--content-max);
+        /* No max-width: fill the full-bleed wrapper so the content panel gets
+           the whole remaining width. */
         margin: 0 auto;
         display: grid;
         grid-template-columns: minmax(240px, 280px) 1fr;

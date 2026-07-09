@@ -69,6 +69,7 @@
 
     // ---- Scroll-spy: highlight the node whose content block is in view.
     let activeId = "";
+    let contentPane; // the scrollable right pane (bound in markup)
     $: if (!activeId && nodes.length) activeId = nodes[0].id;
 
     onMount(() => {
@@ -77,13 +78,21 @@
             .filter(Boolean);
         if (!sections.length) return;
 
+        // On desktop the content scrolls inside `contentPane`, so the observer
+        // must use it as its root; on mobile the pane isn't a scroll container
+        // and `null` (viewport) is correct. A wide viewport ⇒ pane root.
+        const usesPane = typeof window !== "undefined" && window.innerWidth > 820;
         const observer = new IntersectionObserver(
             (entries) => {
                 for (const entry of entries) {
                     if (entry.isIntersecting) activeId = entry.target.id;
                 }
             },
-            { rootMargin: "-25% 0px -60% 0px", threshold: 0 }
+            {
+                root: usesPane ? contentPane : null,
+                rootMargin: "-25% 0px -60% 0px",
+                threshold: 0,
+            }
         );
         sections.forEach((s) => observer.observe(s));
         return () => observer.disconnect();
@@ -134,7 +143,7 @@
         </nav>
 
         <!-- ========================= RIGHT: RESUME CONTENT ========================= -->
-        <div class="resume__content">
+        <div class="resume__content" bind:this={contentPane}>
             <section id="skills" class="section">
                 <h2 class="section__title">Skills</h2>
                 <div class="skills">
@@ -179,24 +188,27 @@
                     </article>
                 {/each}
             </section>
+
+            <!-- Footer scrolls at the bottom of the content pane, not the page. -->
+            <Footer heading="How would you like to connect?" />
         </div>
     </div>
 </main>
 
-<Footer heading="How would you like to connect?" />
-
 <style>
+    /* The page fills the viewport below the fixed nav and does NOT scroll
+       itself — each pane (timeline / content) scrolls independently. */
     .resume {
         background: linear-gradient(180deg, var(--bg-page-start) 0%, var(--bg-page-end) 100%);
-        min-height: 100vh;
+        height: 100vh;
         padding-top: var(--nav-height);
+        overflow: hidden;
     }
     /* The page split in two: timeline nav | resume content.
-       Uses the full viewport width (with only edge padding) rather than the
-       narrow --content-max column, so the content panel gets all the room the
-       narrow timeline nav frees up. */
+       Fills the remaining viewport height; each column scrolls on its own. */
     .resume__split {
         width: 100%;
+        height: calc(100vh - var(--nav-height));
         margin: 0;
         padding: 0 clamp(1rem, 4vw, 3rem);
         display: grid;
@@ -205,21 +217,45 @@
            fit two half-width cards on the spine. */
         grid-template-columns: minmax(280px, 320px) 1fr;
         gap: clamp(1rem, 3vw, 2.5rem);
-        align-items: start;
+        align-items: stretch;
+        min-height: 0; /* allow children to shrink + scroll */
     }
 
     /* ===================== TIMELINE NAV ===================== */
+    /* Full-height pane with its own scroll. */
     .tl {
-        position: sticky;
-        top: var(--nav-height);
-        align-self: start;
-        max-height: calc(100vh - var(--nav-height));
+        height: 100%;
+        min-height: 0;
         overflow-y: auto;
         padding: clamp(1rem, 3vh, 2rem) 0.5rem clamp(2rem, 5vh, 3rem);
         border-right: 1px solid rgba(255, 255, 255, 0.12);
         /* Discrete, theme-tinted scrollbar (Firefox). */
         scrollbar-width: thin;
         scrollbar-color: var(--accent) transparent;
+    }
+    /* Right pane: resume content + footer scroll together, independently of
+       the timeline. */
+    .resume__content {
+        height: 100%;
+        min-height: 0;
+        overflow-y: auto;
+        padding: clamp(1rem, 3vh, 2rem) 0 0;
+        scroll-behavior: smooth;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) transparent;
+    }
+    .resume__content::-webkit-scrollbar {
+        width: 6px;
+    }
+    .resume__content::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .resume__content::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+        border-radius: 999px;
+    }
+    .resume__content::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-dark);
     }
     /* Discrete, theme-tinted scrollbar (WebKit/Chromium). */
     .tl::-webkit-scrollbar {
@@ -449,6 +485,7 @@
     .section {
         margin-bottom: clamp(2.5rem, 6vh, 4rem);
         padding-top: clamp(1rem, 3vh, 2rem);
+        scroll-margin-top: 1rem; /* for the #skills jump inside the content pane */
     }
     .section__title {
         font-size: var(--fs-h2);
@@ -510,7 +547,7 @@
         margin-bottom: 2.5rem;
         padding-left: 1rem;
         border-left: 3px solid transparent;
-        scroll-margin-top: calc(var(--nav-height) + 1.5rem);
+        scroll-margin-top: 1.5rem; /* offset within the scrolling content pane */
         transition: border-color var(--speed) var(--ease);
     }
     .entry--active {
@@ -569,14 +606,28 @@
 
     /* ===================== RESPONSIVE ===================== */
     @media (max-width: 820px) {
+        /* On small screens, drop the fixed two-pane layout and let the page
+           scroll normally (timeline becomes a horizontal strip up top). */
+        .resume {
+            height: auto;
+            min-height: 100vh;
+            overflow: visible;
+        }
         .resume__split {
+            height: auto;
             grid-template-columns: 1fr;
+            align-items: start;
+        }
+        .resume__content {
+            height: auto;
+            overflow: visible;
         }
         /* Timeline becomes a horizontal, scrollable strip pinned under the nav. */
         .tl {
             position: sticky;
             top: var(--nav-height);
             z-index: 5;
+            height: auto;
             max-height: none;
             overflow: visible;
             border-right: none;
