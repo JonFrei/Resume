@@ -15,7 +15,7 @@ import pg from "pg";
 import { DATABASE_URL, hasDatabase } from "./config.js";
 // Seed data is imported (bundled by Vite), NOT read from disk — a filesystem
 // path relative to the source breaks once the code is bundled into build/.
-import seedData from "../../../static/data/projects.json" assert { type: "json" };
+import seedData from "../../../static/data/projects.json" with { type: "json" };
 
 let pool = null;
 function getPool() {
