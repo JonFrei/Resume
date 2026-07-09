@@ -35,6 +35,12 @@
     color: var(--text-on-accent);
 }
 
+.admin-header__nav a.active {
+    color: var(--text-on-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
 .admin-header__logout {
     font-family: var(--font);
     font-weight: 700;

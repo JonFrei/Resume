@@ -1,7 +1,38 @@
 <script>
+    import { onMount } from "svelte";
     import Nav from "$lib/components/Nav.svelte";
     import Footer from "$lib/components/Footer.svelte";
-    import resume from "$lib/data/resume.json";
+
+    export let data;
+    $: resume = data.resume;
+
+    // The timeline spine runs Present (top) → past (bottom), mirroring the
+    // original "Professional Experience" page. End labels are presentational.
+    const timelineStart = "Present";
+    const timelineEnd = "1993";
+
+    // Node currently in view — lit up on the spine as the reader scrolls.
+    let activeId = "";
+    $: if (!activeId && resume?.experience?.length) activeId = resume.experience[0].id;
+
+    onMount(() => {
+        const sections = resume.experience
+            .map((job) => document.getElementById(job.id))
+            .filter(Boolean);
+        if (!sections.length) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) activeId = entry.target.id;
+                }
+            },
+            // Trip when a section reaches the upper third of the viewport.
+            { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+        );
+        sections.forEach((s) => observer.observe(s));
+        return () => observer.disconnect();
+    });
 </script>
 
 <svelte:head>
@@ -12,55 +43,68 @@
 <Nav />
 
 <main class="page resume">
-    <div class="resume__layout">
-        <aside class="resume__nav" aria-label="Section navigation">
-            <ul class="jump">
-                <li><a class="jump__link" href="#skills">Skills</a></li>
-                {#each resume.experience as job}
-                    <li><a class="jump__link" href={`#${job.id}`}>{job.company}</a></li>
+    <div class="resume__wrap">
+        <section id="skills" class="section">
+            <h2 class="section__title">Skills</h2>
+            <div class="skills">
+                {#each resume.skills as group}
+                    <div class="skills__group">
+                        <h3 class="skills__heading">{group.heading}</h3>
+                        <ul class="skills__list" class:skills__list--tags={group.style === "tags"}>
+                            {#each group.items as item}
+                                {#if typeof item === "string"}
+                                    <li>{item}</li>
+                                {:else}
+                                    <li>{item.text} <span class="skills__tag">{item.tag}</span></li>
+                                {/if}
+                            {/each}
+                        </ul>
+                    </div>
                 {/each}
-            </ul>
-        </aside>
+            </div>
+        </section>
 
-        <div class="resume__content">
-            <section id="skills" class="section">
-                <h2 class="section__title">Skills</h2>
-                <div class="skills">
-                    {#each resume.skills as group}
-                        <div class="skills__group">
-                            <h3 class="skills__heading">{group.heading}</h3>
-                            <ul class="skills__list" class:skills__list--tags={group.style === "tags"}>
-                                {#each group.items as item}
-                                    {#if typeof item === "string"}
-                                        <li>{item}</li>
-                                    {:else}
-                                        <li>{item.text} <span class="skills__tag">{item.tag}</span></li>
-                                    {/if}
-                                {/each}
-                            </ul>
-                        </div>
+        <section class="section">
+            <h2 class="section__title">Professional Experience</h2>
+
+            <div class="resume__layout">
+                <!-- Timeline spine: Present → past, each job a node branching off. -->
+                <nav class="timeline" aria-label="Experience timeline">
+                    <p class="timeline__cap timeline__cap--top">{timelineStart}</p>
+                    <span class="timeline__marker timeline__marker--top" aria-hidden="true"></span>
+                    <span class="timeline__spine" aria-hidden="true"></span>
+                    <ul class="timeline__nodes">
+                        {#each resume.experience as job}
+                            <li class="node" class:node--active={activeId === job.id}>
+                                <a class="node__link" href={`#${job.id}`} aria-current={activeId === job.id ? "true" : undefined}>
+                                    <span class="node__dot" aria-hidden="true"></span>
+                                    <span class="node__label">{job.company}</span>
+                                </a>
+                            </li>
+                        {/each}
+                    </ul>
+                    <span class="timeline__marker timeline__marker--bottom" aria-hidden="true"></span>
+                    <p class="timeline__cap timeline__cap--bottom">{timelineEnd}</p>
+                </nav>
+
+                <div class="resume__content">
+                    {#each resume.experience as job}
+                        <article id={job.id} class="job" class:job--active={activeId === job.id}>
+                            <h3 class="job__company">{job.company}</h3>
+                            {#each job.roles as role}
+                                <div class="job__role">
+                                    <p class="job__title">{role.title}</p>
+                                    <p class="job__dates">{role.dates}</p>
+                                </div>
+                                <ul class="job__points">
+                                    {#each role.points as pt}<li>{pt}</li>{/each}
+                                </ul>
+                            {/each}
+                        </article>
                     {/each}
                 </div>
-            </section>
-
-            <section class="section">
-                <h2 class="section__title">Professional Experience</h2>
-                {#each resume.experience as job}
-                    <article id={job.id} class="job">
-                        <h3 class="job__company">{job.company}</h3>
-                        {#each job.roles as role}
-                            <div class="job__role">
-                                <p class="job__title">{role.title}</p>
-                                <p class="job__dates">{role.dates}</p>
-                            </div>
-                            <ul class="job__points">
-                                {#each role.points as pt}<li>{pt}</li>{/each}
-                            </ul>
-                        {/each}
-                    </article>
-                {/each}
-            </section>
-        </div>
+            </div>
+        </section>
     </div>
 </main>
 

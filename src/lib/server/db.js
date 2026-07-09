@@ -13,9 +13,11 @@
 
 import pg from "pg";
 import { DATABASE_URL, hasDatabase } from "./config.js";
+import { normalizeTheme } from "../theme.js";
 // Seed data is imported (bundled by Vite), NOT read from disk — a filesystem
 // path relative to the source breaks once the code is bundled into build/.
 import seedData from "../../../static/data/projects.json" with { type: "json" };
+import resumeSeed from "../../../static/data/resume.json" with { type: "json" };
 
 let pool = null;
 function getPool() {
@@ -49,6 +51,14 @@ export async function ensureSchema() {
             position     INTEGER NOT NULL DEFAULT 0,
             created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
             updated_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+        );
+    `);
+    // Key/value store for singleton site settings (resume content, theme, …).
+    await p.query(`
+        CREATE TABLE IF NOT EXISTS settings (
+            key        TEXT PRIMARY KEY,
+            value      JSONB NOT NULL DEFAULT '{}'::jsonb,
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         );
     `);
 }
@@ -233,4 +243,58 @@ export async function seedFromJson({ force = false } = {}) {
         );
     }
     return { seeded: true, count: projects.length };
+}
+
+/* ---------- Settings (singleton key/value blobs) ---------- */
+
+// Read a settings blob by key. Returns null if no DB or no row.
+async function getSetting(key) {
+    const p = getPool();
+    if (!p) return null;
+    try {
+        const { rows } = await p.query(`SELECT value FROM settings WHERE key=$1`, [key]);
+        return rows.length ? rows[0].value : null;
+    } catch (err) {
+        console.error(`DB read failed (settings.${key}):`, err.message);
+        return null;
+    }
+}
+
+// Upsert a settings blob by key (requires DB).
+async function saveSetting(key, value) {
+    const p = requireDb();
+    await p.query(
+        `INSERT INTO settings (key, value, updated_at)
+         VALUES ($1, $2, now())
+         ON CONFLICT (key) DO UPDATE SET value=$2, updated_at=now()`,
+        [key, value]
+    );
+    return value;
+}
+
+/* ---------- Resume ---------- */
+
+// The resume content ({ skills, experience }). Falls back to the bundled seed
+// JSON when there's no DB or nothing has been saved yet.
+export async function getResume() {
+    const stored = await getSetting("resume");
+    if (stored && (stored.skills || stored.experience)) return stored;
+    return structuredClone(resumeSeed);
+}
+
+export async function saveResume(resume) {
+    return saveSetting("resume", resume);
+}
+
+/* ---------- Theme ---------- */
+
+// The editable theme (color tokens). Always returns a complete, normalized
+// theme — falls back to DEFAULT_THEME when unset so the site is always valid.
+export async function getTheme() {
+    const stored = await getSetting("theme");
+    return normalizeTheme(stored);
+}
+
+export async function saveTheme(theme) {
+    return saveSetting("theme", normalizeTheme(theme));
 }
