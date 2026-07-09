@@ -6,6 +6,12 @@ const config = {
     preprocess: vitePreprocess(),
     kit: {
         adapter: adapter(),
+        // The app serves two origins (main site + admin subdomain), so
+        // SvelteKit's single-origin CSRF check can't cover both and would block
+        // admin form POSTs behind the proxy. Disable it and rely instead on the
+        // SameSite=lax, httpOnly signed session cookie: cross-site POSTs can't
+        // carry that cookie, and every admin write requires it.
+        csrf: { checkOrigin: false },
     },
 };
 

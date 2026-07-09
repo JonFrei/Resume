@@ -30,6 +30,12 @@ export const R2 = {
             : ""),
 };
 
+// Hostname that serves the admin. On this host, the admin UI is mounted at the
+// root (e.g. admin.jonathan-freier.com/ -> the admin dashboard). Requests to
+// /admin on any OTHER host are blocked. If unset, admin stays at /admin on the
+// main site (useful for local dev).
+export const ADMIN_HOST = (process.env.ADMIN_HOST || "").toLowerCase();
+
 export const isProd = process.env.NODE_ENV === "production";
 
 // True when a real database is configured.
