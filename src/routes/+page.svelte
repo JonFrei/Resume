@@ -64,17 +64,19 @@
     }
 
     .hero__title {
-        font-size: clamp(2.4rem, 9vw, 5rem);
+        font-size: var(--fs-display);
         color: var(--text);
-        letter-spacing: 0.02em;
+        letter-spacing: -0.01em;
         text-shadow: 0 2px 12px rgba(9, 82, 86, 0.5);
     }
 
     .hero__subtitle {
         margin: 0;
-        font-size: clamp(1rem, 3vw, 1.5rem);
-        color: var(--bg-deep);
-        font-weight: 700;
+        font-family: var(--font-mono);
+        font-size: var(--fs-lead);
+        color: var(--text-secondary);
+        font-weight: 500;
+        letter-spacing: 0.02em;
     }
 
     .hero__links {

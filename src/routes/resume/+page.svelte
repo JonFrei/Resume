@@ -200,9 +200,10 @@
         margin: 0;
         padding: 0 clamp(1rem, 4vw, 3rem);
         display: grid;
-        /* Narrower timeline nav column; cards keep their own fixed size (below)
-           so trimming the column doesn't shrink them. */
-        grid-template-columns: minmax(240px, 280px) 1fr;
+        /* Slightly narrower than the original 300–360px timeline column; the
+           cards branch out to each side (see .tlnode__card), so this needs to
+           fit two half-width cards on the spine. */
+        grid-template-columns: minmax(280px, 320px) 1fr;
         gap: clamp(1rem, 3vw, 2.5rem);
         align-items: start;
     }
@@ -244,6 +245,7 @@
         text-align: center;
         background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 130%);
         color: var(--text-on-accent);
+        font-family: var(--font-mono);
         font-weight: 700;
         letter-spacing: 0.06em;
         text-transform: uppercase;
@@ -286,12 +288,13 @@
     .tl__cap {
         position: relative;
         margin: 0;
-        font-size: 0.72rem;
+        font-family: var(--font-mono);
+        font-size: var(--fs-label);
         font-weight: 700;
         letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: var(--bg-deep);
-        background: var(--bg-mid);
+        color: var(--text-heading);
+        background: var(--bg-deep);
         padding: 0.15rem 0.5rem;
         border-radius: 999px;
     }
@@ -342,14 +345,12 @@
     .tlnode--education::before {
         border-color: var(--bg-light);
     }
-    /* horizontal connector from spine to card. Short stub linking the spine to
-       the card's near edge; the card itself takes most of the track width so it
-       stays a normal readable size even when the column is narrow. */
+    /* horizontal connector from the center spine out to the branched card. */
     .tlnode::after {
         content: "";
         position: absolute;
         top: 50%;
-        width: 12px;
+        width: calc(50% - 7.5px - 10px);
         height: 2px;
         background: rgba(255, 255, 255, 0.35);
     }
@@ -365,10 +366,10 @@
         display: flex;
         flex-direction: column;
         gap: 0.1rem;
-        /* Card width is decoupled from the column: it takes a fixed share of
-           the track (not calc(50%…)), so narrowing the column doesn't shrink
-           the cards. Cards still offset left/right to keep the branching look. */
-        width: 74%;
+        /* Half-track-width cards that branch out to each side of the spine.
+           The overall panel is full-width now (see .resume__split), so the
+           timeline column has room for this without cramping the cards. */
+        width: calc(50% - 22px);
         padding: 0.5rem 0.65rem;
         border-radius: var(--radius);
         /* Opaque, slightly darkened surface so the branch line reads as ending
@@ -398,8 +399,9 @@
     }
 
     .tlnode__kind {
-        font-size: 0.58rem;
-        letter-spacing: 0.12em;
+        font-family: var(--font-mono);
+        font-size: var(--fs-label);
+        letter-spacing: 0.1em;
         text-transform: uppercase;
         font-weight: 700;
         color: var(--accent);
@@ -408,17 +410,18 @@
         color: var(--bg-light);
     }
     .tlnode__title {
-        font-size: 0.85rem;
+        font-size: 0.95rem;
         font-weight: 700;
         color: var(--text);
-        line-height: 1.2;
+        line-height: 1.25;
     }
     .tlnode__sub {
-        font-size: 0.7rem;
+        font-size: 0.85rem;
         color: var(--text-muted);
     }
     .tlnode__dates {
-        font-size: 0.64rem;
+        font-family: var(--font-mono);
+        font-size: var(--fs-label);
         color: var(--text-muted);
         letter-spacing: 0.03em;
     }
@@ -448,7 +451,7 @@
         padding-top: clamp(1rem, 3vh, 2rem);
     }
     .section__title {
-        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        font-size: var(--fs-h2);
         color: var(--text);
         padding-bottom: 0.4rem;
         margin-bottom: 1.5rem;
@@ -466,7 +469,7 @@
     }
     .skills__heading {
         font-size: 1.15rem;
-        color: var(--bg-deep);
+        color: var(--text-heading);
         padding-bottom: 0.4rem;
         margin-bottom: 0.75rem;
         border-bottom: 2px solid var(--accent);
@@ -486,6 +489,7 @@
     .skills__list--tags li {
         background: var(--bg-deep);
         color: var(--text);
+        font-family: var(--font-mono);
         padding: 0.3rem 0.75rem;
         border-radius: 999px;
         font-size: 0.9rem;
@@ -497,7 +501,8 @@
         background: var(--accent);
         color: var(--text-on-accent);
         border-radius: 999px;
-        font-size: 0.75rem;
+        font-family: var(--font-mono);
+        font-size: var(--fs-label);
     }
 
     /* content entries (experience + education) */
@@ -521,8 +526,9 @@
         gap: 0.5rem 0.75rem;
     }
     .entry__badge {
-        font-size: 0.62rem;
-        letter-spacing: 0.12em;
+        font-family: var(--font-mono);
+        font-size: var(--fs-label);
+        letter-spacing: 0.1em;
         text-transform: uppercase;
         font-weight: 700;
         padding: 0.15rem 0.5rem;
@@ -532,7 +538,7 @@
     }
     .entry--education .entry__badge {
         background: var(--bg-light);
-        color: var(--bg-deep);
+        color: var(--text-on-accent);
     }
     .entry__title {
         font-size: 1.5rem;
@@ -544,7 +550,9 @@
         justify-content: space-between;
         gap: 0.25rem 1rem;
         margin-top: 0.5rem;
-        color: var(--bg-deep);
+        font-family: var(--font-mono);
+        font-size: var(--fs-meta);
+        color: var(--text-secondary);
         font-weight: 700;
     }
     .entry__meta p {

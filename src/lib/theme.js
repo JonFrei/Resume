@@ -26,9 +26,11 @@ export const TOKENS = [
     { key: "bgPageEnd",   var: "bg-page-end",   label: "Page background (bottom)", group: "Page background" },
 
     // Text colors (the semantic backgrounds derive from the palette above).
-    { key: "text",        var: "text",         label: "Text",                  group: "Text" },
-    { key: "textMuted",   var: "text-muted",   label: "Text (muted)",          group: "Text" },
-    { key: "textOnAccent",var: "text-on-accent", label: "Text on accent",      group: "Text" },
+    { key: "text",         var: "text",          label: "Text",                    group: "Text" },
+    { key: "textMuted",    var: "text-muted",    label: "Text (muted)",            group: "Text" },
+    { key: "textOnAccent", var: "text-on-accent", label: "Text on accent",         group: "Text" },
+    { key: "textSecondary",var: "text-secondary", label: "Text (secondary, on dark)", group: "Text" },
+    { key: "textHeading",  var: "text-heading",  label: "Heading (on dark panels)", group: "Text" },
 ];
 
 // Default values — MUST match the :root declarations in base.css so that an
@@ -38,13 +40,15 @@ export const DEFAULT_THEME = {
     seaweed: "#087F8C",
     pine: "#5AAA95",
     asparagus: "#86A873",
-    curry: "#BB9F06",
-    curryDark: "#D18804",
+    curry: "#F2B441",
+    curryDark: "#D89A2A",
     bgPageStart: "#072325",
     bgPageEnd: "#061c1d",
     text: "#ffffff",
     textMuted: "#e6e6e6",
-    textOnAccent: "#ffffff",
+    textOnAccent: "#0b1f21",
+    textSecondary: "#9DC3BD",
+    textHeading: "#CDE7E1",
 };
 
 const HEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;

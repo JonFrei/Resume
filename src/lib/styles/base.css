@@ -12,8 +12,8 @@
     --seaweed:        #087F8C;
     --pine:           #5AAA95;
     --asparagus:      #86A873;
-    --curry:          #BB9F06; /* accent */
-    --curry-dark:     #D18804;
+    --curry:          #F2B441; /* accent (gold) */
+    --curry-dark:     #D89A2A;
 
     /* Semantic aliases — use these in page CSS, not the raw names */
     --bg-deep:        var(--jungle-green);
@@ -28,7 +28,14 @@
     --surface:        var(--jungle-green);
     --text:           #ffffff;
     --text-muted:     #e6e6e6;
-    --text-on-accent: #ffffff;
+    /* Dark ink for text sitting ON the gold accent (nav, buttons, footer,
+       badges). White-on-gold is ~1.9:1 and illegible; dark ink is ~9:1. */
+    --text-on-accent: #0b1f21;
+    /* Light secondary/heading text for use on the DARK page background. The
+       old dark-teal (--bg-deep) secondary text is invisible on near-black;
+       these replace it. --text-secondary ~9:1, --text-heading ~11:1. */
+    --text-secondary: #9DC3BD;
+    --text-heading:   #CDE7E1;
 
     /* Layout */
     --nav-height:     56px;
@@ -36,8 +43,25 @@
     --radius:         6px;
     --content-max:    1100px;
 
-    /* Type */
-    --font: 'Roboto Mono', ui-monospace, 'SFMono-Regular', 'Courier New', monospace;
+    /* Type — a three-role system:
+       --font-body  Inter for body + UI (fast to read on screen)
+       --font-head  Space Grotesk for headings (more character)
+       --font-mono  Roboto Mono for labels, dates, data, code (engineered feel)
+       --font is kept as an alias for --font-body for backward compatibility. */
+    --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-head: 'Space Grotesk', var(--font-body);
+    --font-mono: 'Roboto Mono', ui-monospace, 'SFMono-Regular', 'Courier New', monospace;
+    --font: var(--font-body);
+
+    /* Modular type scale (1.2 ratio). Body copy is the reading size. */
+    --fs-display: clamp(2.6rem, 8vw, 4rem);
+    --fs-h1:      clamp(1.9rem, 5vw, 2.6rem);
+    --fs-h2:      clamp(1.5rem, 3.5vw, 1.95rem);
+    --fs-h3:      1.35rem;
+    --fs-lead:    clamp(1.05rem, 2vw, 1.2rem);
+    --fs-body:    1.06rem;   /* ~17px reading size */
+    --fs-meta:    0.85rem;
+    --fs-label:   0.75rem;   /* floor for tiny mono labels */
 
     /* Motion */
     --ease: cubic-bezier(0.3, 0.4, 0.5, 1.1);
@@ -60,9 +84,10 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    font-family: var(--font);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
     color: var(--text);
-    line-height: 1.5;
+    line-height: 1.65;
     overflow-x: hidden;
     /* Prevent fixed nav from covering anchored content */
     scroll-padding-top: var(--nav-height);
@@ -87,7 +112,10 @@ ol {
 
 h1, h2, h3, h4 {
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.15;
+    font-family: var(--font-head);
+    font-weight: 700;
+    letter-spacing: -0.01em;
 }
 
 /* -------------------- Navigation header -------------------- */
@@ -117,6 +145,7 @@ h1, h2, h3, h4 {
 
 .nav__brand {
     color: var(--text-on-accent);
+    font-family: var(--font-mono);
     font-size: clamp(1.1rem, 2.6vw, 1.5rem);
     font-weight: 700;
     white-space: nowrap;

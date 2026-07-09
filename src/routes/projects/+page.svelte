@@ -117,8 +117,9 @@
 
     .project-card__tags {
         margin: 0.4rem 0 0;
-        font-size: 0.9rem;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
         color: var(--jungle-green);
-        font-weight: 700;
+        font-weight: 500;
     }
 </style>

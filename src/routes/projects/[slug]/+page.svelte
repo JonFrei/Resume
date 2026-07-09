@@ -70,7 +70,7 @@
         align-items: center;
         gap: 0.4rem;
         margin-bottom: 1.5rem;
-        color: var(--bg-deep);
+        color: var(--text-secondary);
         font-weight: 700;
         transition: color var(--speed) var(--ease);
     }
@@ -83,7 +83,7 @@
     }
     .project-hero__tagline {
         margin: 0.75rem 0 1.5rem;
-        color: var(--bg-deep);
+        color: var(--text-secondary);
         font-weight: 700;
         font-size: clamp(1rem, 2.5vw, 1.25rem);
     }
