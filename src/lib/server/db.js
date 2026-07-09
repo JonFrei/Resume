@@ -95,18 +95,30 @@ function projectToRow(p) {
 
 /* ---------- Reads ---------- */
 
+// Read the seed JSON (fallback source).
+async function readSeed() {
+    const raw = await readFile(SEED_PATH, "utf8");
+    return JSON.parse(raw).projects;
+}
+
 // All projects in display order, in the front-end shape.
+// Falls back to the seed JSON when there's no DB configured OR the DB read
+// fails, so the public site never 500s because of a database hiccup.
 export async function getAllProjects() {
     const p = getPool();
-    if (!p) {
-        // JSON fallback.
-        const raw = await readFile(SEED_PATH, "utf8");
-        return JSON.parse(raw).projects;
+    if (!p) return readSeed();
+    try {
+        const { rows } = await p.query(
+            `SELECT * FROM projects ORDER BY position ASC, id ASC`
+        );
+        // A configured-but-empty DB (not seeded yet) also falls back to JSON so
+        // the site shows content until the first seed.
+        if (rows.length === 0) return readSeed();
+        return rows.map(rowToProject);
+    } catch (err) {
+        console.error("DB read failed, falling back to seed JSON:", err.message);
+        return readSeed();
     }
-    const { rows } = await p.query(
-        `SELECT * FROM projects ORDER BY position ASC, id ASC`
-    );
-    return rows.map(rowToProject);
 }
 
 export async function getProjectBySlug(slug) {
@@ -121,12 +133,18 @@ export async function getAdminProjects() {
         const all = await getAllProjects();
         return all.map((x, i) => ({ ...x, id: null, position: i }));
     }
-    const { rows } = await p.query(
-        `SELECT id, slug, title, tagline, thumb, has_detail, external_url,
-                code_url, content, position
-         FROM projects ORDER BY position ASC, id ASC`
-    );
-    return rows.map((r) => ({ ...rowToProject(r), id: r.id, position: r.position }));
+    try {
+        const { rows } = await p.query(
+            `SELECT id, slug, title, tagline, thumb, has_detail, external_url,
+                    code_url, content, position
+             FROM projects ORDER BY position ASC, id ASC`
+        );
+        return rows.map((r) => ({ ...rowToProject(r), id: r.id, position: r.position }));
+    } catch (err) {
+        console.error("DB read failed (admin list):", err.message);
+        const all = await getAllProjects();
+        return all.map((x, i) => ({ ...x, id: null, position: i }));
+    }
 }
 
 /* ---------- Writes (require DB) ---------- */
