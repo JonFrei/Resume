@@ -287,7 +287,7 @@
 
     /* ---- Real project-detail look (mirrors routes/projects/[slug]) ---- */
     .project-detail {
-        background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-light) 100%);
+        background: linear-gradient(180deg, var(--bg-page-start) 0%, var(--bg-page-end) 100%);
     }
     .project-detail__inner {
         max-width: var(--content-max);

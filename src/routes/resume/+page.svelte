@@ -187,7 +187,7 @@
 
 <style>
     .resume {
-        background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-light) 100%);
+        background: linear-gradient(180deg, var(--bg-page-start) 0%, var(--bg-page-end) 100%);
         min-height: 100vh;
         padding-top: var(--nav-height);
     }
@@ -196,7 +196,8 @@
         max-width: var(--content-max);
         margin: 0 auto;
         display: grid;
-        grid-template-columns: minmax(300px, 360px) 1fr;
+        /* Timeline nav ≈ 20% of the width (min 200px so cards stay legible). */
+        grid-template-columns: minmax(200px, 20%) 1fr;
         gap: clamp(1rem, 3vw, 2.5rem);
         align-items: start;
     }
@@ -210,7 +211,23 @@
         overflow-y: auto;
         padding: clamp(1rem, 3vh, 2rem) 0.5rem clamp(2rem, 5vh, 3rem);
         border-right: 1px solid rgba(255, 255, 255, 0.12);
+        /* Discrete, theme-tinted scrollbar (Firefox). */
         scrollbar-width: thin;
+        scrollbar-color: var(--accent) transparent;
+    }
+    /* Discrete, theme-tinted scrollbar (WebKit/Chromium). */
+    .tl::-webkit-scrollbar {
+        width: 6px;
+    }
+    .tl::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .tl::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+        border-radius: 999px;
+    }
+    .tl::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-dark);
     }
     .tl__inner {
         min-height: 100%;
@@ -335,15 +352,21 @@
     .tlnode--right { justify-content: flex-end; }
 
     .tlnode__card {
+        position: relative;
+        /* Sit above the spine + horizontal connector so no line shows through. */
+        z-index: 3;
         display: flex;
         flex-direction: column;
         gap: 0.1rem;
         width: calc(50% - 22px);
         padding: 0.5rem 0.65rem;
         border-radius: var(--radius);
-        background: rgba(9, 82, 86, 0.35);
+        /* Opaque, slightly darkened surface so the branch line reads as ending
+           at the card edge rather than crossing through it. */
+        background: var(--bg-deep);
         border: 1px solid rgba(255, 255, 255, 0.14);
         border-left: 3px solid var(--accent);
+        box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.6);
         transition: transform var(--speed) var(--ease),
             border-color var(--speed) var(--ease), background var(--speed) var(--ease);
     }
@@ -361,7 +384,7 @@
     .tlnode__card:hover,
     .tlnode__card:focus-visible {
         transform: translateY(-1px);
-        background: rgba(9, 82, 86, 0.6);
+        background: var(--surface);
     }
 
     .tlnode__kind {
@@ -399,7 +422,10 @@
     }
     .tlnode--active .tlnode__card {
         border-color: var(--accent-dark);
-        background: rgba(209, 136, 4, 0.16);
+        /* Opaque base + a gold wash on top keeps the branch line hidden. */
+        background:
+            linear-gradient(rgba(209, 136, 4, 0.16), rgba(209, 136, 4, 0.16)),
+            var(--bg-deep);
     }
     .tlnode--active.tlnode--left .tlnode__card {
         border-left-color: rgba(255, 255, 255, 0.14);

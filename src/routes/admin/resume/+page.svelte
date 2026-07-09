@@ -290,7 +290,7 @@
     .editor-hint { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem; }
 
     /* ---- Real resume page look (mirrors routes/resume/+page.svelte) ---- */
-    .resume { background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-light) 100%); }
+    .resume { background: linear-gradient(180deg, var(--bg-page-start) 0%, var(--bg-page-end) 100%); }
     .resume__wrap {
         max-width: var(--content-max);
         margin: 0 auto;

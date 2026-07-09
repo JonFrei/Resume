@@ -19,6 +19,10 @@
     --bg-deep:        var(--jungle-green);
     --bg-mid:         var(--seaweed);
     --bg-light:       var(--pine);
+    /* Page-background gradient stops. Editable from the admin theme page so the
+       overall page wash can be set independently of the mid/light palette. */
+    --bg-page-start:  #072325;
+    --bg-page-end:    #061c1d;
     --accent:         var(--curry);
     --accent-dark:    var(--curry-dark);
     --surface:        var(--jungle-green);

@@ -48,7 +48,7 @@
         align-items: center;
         justify-content: center;
         padding-top: var(--nav-height);
-        background: linear-gradient(160deg, var(--bg-mid) 0%, var(--bg-light) 100%);
+        background: linear-gradient(160deg, var(--bg-page-start) 0%, var(--bg-page-end) 100%);
     }
 
     .hero {

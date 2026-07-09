@@ -202,7 +202,7 @@
         padding: 0.6rem 0.9rem;
     }
     .preview__body {
-        background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-light) 100%);
+        background: linear-gradient(180deg, var(--bg-page-start) 0%, var(--bg-page-end) 100%);
         padding: 1rem;
         display: flex;
         flex-direction: column;

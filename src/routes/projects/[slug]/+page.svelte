@@ -56,7 +56,7 @@
 
 <style>
     .project-detail {
-        background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-light) 100%);
+        background: linear-gradient(180deg, var(--bg-page-start) 0%, var(--bg-page-end) 100%);
         min-height: 100vh;
         padding-top: var(--nav-height);
     }

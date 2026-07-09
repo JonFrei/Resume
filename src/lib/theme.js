@@ -21,6 +21,10 @@ export const TOKENS = [
     { key: "curry",       var: "curry",        label: "Curry (accent)",        group: "Brand palette" },
     { key: "curryDark",   var: "curry-dark",   label: "Curry Dark",            group: "Brand palette" },
 
+    // Page background — the full-page gradient wash behind every page.
+    { key: "bgPageStart", var: "bg-page-start", label: "Page background (top)",    group: "Page background" },
+    { key: "bgPageEnd",   var: "bg-page-end",   label: "Page background (bottom)", group: "Page background" },
+
     // Text colors (the semantic backgrounds derive from the palette above).
     { key: "text",        var: "text",         label: "Text",                  group: "Text" },
     { key: "textMuted",   var: "text-muted",   label: "Text (muted)",          group: "Text" },
@@ -36,6 +40,8 @@ export const DEFAULT_THEME = {
     asparagus: "#86A873",
     curry: "#BB9F06",
     curryDark: "#D18804",
+    bgPageStart: "#072325",
+    bgPageEnd: "#061c1d",
     text: "#ffffff",
     textMuted: "#e6e6e6",
     textOnAccent: "#ffffff",
