@@ -196,8 +196,9 @@
         max-width: var(--content-max);
         margin: 0 auto;
         display: grid;
-        /* Timeline nav ≈ 20% of the width (min 200px so cards stay legible). */
-        grid-template-columns: minmax(200px, 20%) 1fr;
+        /* Narrower timeline nav column; cards keep their own fixed size (below)
+           so trimming the column doesn't shrink them. */
+        grid-template-columns: minmax(240px, 280px) 1fr;
         gap: clamp(1rem, 3vw, 2.5rem);
         align-items: start;
     }
@@ -337,12 +338,14 @@
     .tlnode--education::before {
         border-color: var(--bg-light);
     }
-    /* horizontal connector from spine to card */
+    /* horizontal connector from spine to card. Short stub linking the spine to
+       the card's near edge; the card itself takes most of the track width so it
+       stays a normal readable size even when the column is narrow. */
     .tlnode::after {
         content: "";
         position: absolute;
         top: 50%;
-        width: calc(50% - 7.5px - 10px);
+        width: 12px;
         height: 2px;
         background: rgba(255, 255, 255, 0.35);
     }
@@ -358,7 +361,10 @@
         display: flex;
         flex-direction: column;
         gap: 0.1rem;
-        width: calc(50% - 22px);
+        /* Card width is decoupled from the column: it takes a fixed share of
+           the track (not calc(50%…)), so narrowing the column doesn't shrink
+           the cards. Cards still offset left/right to keep the branching look. */
+        width: 74%;
         padding: 0.5rem 0.65rem;
         border-radius: var(--radius);
         /* Opaque, slightly darkened surface so the branch line reads as ending
