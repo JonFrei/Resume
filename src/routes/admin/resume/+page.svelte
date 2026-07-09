@@ -699,36 +699,12 @@
 
     /* ===================== RESPONSIVE ===================== */
     @media (max-width: 820px) {
-        /* min-width:0 lets the single-column grid track (and its children) shrink
-           to the canvas width instead of being forced wider by the timeline strip
-           / content, which the canvas frame would otherwise clip. */
+        /* Match the public resume: hide the timeline preview on small screens and
+           give the full canvas width to the editable content. min-width:0 lets the
+           single-column grid track shrink to the canvas instead of being clipped. */
         .resume__split { grid-template-columns: 1fr; min-width: 0; }
         .resume__content { min-width: 0; }
-        .tl {
-            position: static;
-            max-height: none;
-            overflow: visible;
-            min-width: 0;
-            border-right: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 0.75rem 0.5rem 1rem;
-        }
-        .tl__skills { width: auto; display: inline-block; margin: 0 0 0.75rem; }
-        .tl__track { flex-direction: row; align-items: center; overflow-x: auto; padding-bottom: 0.5rem; }
-        .tl__track::before {
-            top: 50%; bottom: auto; left: 0; right: 0;
-            transform: translateY(-50%); width: auto; height: 3px;
-        }
-        .tl__cap { flex: none; }
-        .tl__marker { flex: none; margin: 0 0.35rem; }
-        .tl__nodes { flex-direction: row; width: auto; gap: 0.6rem; padding: 0 0.35rem; }
-        .tlnode { min-height: 0; }
-        .tlnode::before, .tlnode::after { display: none; }
-        .tlnode__card {
-            width: auto; min-width: 150px; text-align: left !important;
-            border: 2px solid var(--accent) !important; background: var(--bg-deep); white-space: normal;
-        }
-        .tlnode--education .tlnode__card { border-color: var(--bg-light) !important; }
+        .tl { display: none; }
         .entry { padding-left: 0.75rem; }
     }
 </style>

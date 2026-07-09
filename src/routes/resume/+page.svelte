@@ -606,8 +606,9 @@
 
     /* ===================== RESPONSIVE ===================== */
     @media (max-width: 820px) {
-        /* On small screens, drop the fixed two-pane layout and let the page
-           scroll normally (timeline becomes a horizontal strip up top). */
+        /* On small screens the branching timeline nav doesn't fit — hide it
+           entirely and give the full width to the resume content so the reader
+           stays focused on the resume itself. The page scrolls normally. */
         .resume {
             height: auto;
             min-height: 100vh;
@@ -617,89 +618,17 @@
             height: auto;
             grid-template-columns: 1fr;
             align-items: start;
-            /* A single-column grid track defaults to min-width:auto, so the wide
-               timeline strip + content would blow the track past the viewport
-               (horizontal-scroll bug). Cap it to the container width. */
             min-width: 0;
+        }
+        .tl {
+            display: none;
         }
         .resume__content {
             height: auto;
             overflow: visible;
-            /* Same reason: let this grid child shrink below its content's
-               intrinsic width instead of forcing the page wider. */
+            /* Let this grid child shrink to the viewport instead of being forced
+               wider by its content (would otherwise cause horizontal scroll). */
             min-width: 0;
-        }
-        .tl {
-            min-width: 0;
-        }
-        /* Timeline becomes a horizontal, scrollable strip pinned under the nav. */
-        .tl {
-            position: sticky;
-            top: var(--nav-height);
-            z-index: 5;
-            height: auto;
-            max-height: none;
-            overflow: visible;
-            border-right: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-mid) 82%, transparent 100%);
-            padding: 0.75rem 0.5rem 1rem;
-        }
-        .tl__skills {
-            width: auto;
-            display: inline-block;
-            margin: 0 0 0.75rem;
-        }
-        .tl__track {
-            flex-direction: row;
-            align-items: center;
-            overflow-x: auto;
-            padding-bottom: 0.5rem;
-        }
-        .tl__track::before {
-            top: 50%;
-            bottom: auto;
-            left: 0;
-            right: 0;
-            transform: translateY(-50%);
-            width: auto;
-            height: 3px;
-        }
-        .tl__cap {
-            flex: none;
-        }
-        .tl__marker {
-            flex: none;
-            margin: 0 0.35rem;
-        }
-        .tl__nodes {
-            flex-direction: row;
-            width: auto;
-            gap: 0.6rem;
-            padding: 0 0.35rem;
-        }
-        .tlnode {
-            min-height: 0;
-        }
-        /* Cards no longer branch above/below — they sit inline as pills. */
-        .tlnode::before,
-        .tlnode::after {
-            display: none;
-        }
-        .tlnode__card {
-            width: auto;
-            min-width: 150px;
-            text-align: left !important;
-            border: 2px solid var(--accent) !important;
-            background: var(--bg-deep);
-            white-space: normal;
-        }
-        .tlnode--education .tlnode__card {
-            border-color: var(--bg-light) !important;
-        }
-        .tlnode--active .tlnode__card {
-            background: rgba(209, 136, 4, 0.22);
-            border-color: var(--accent-dark) !important;
         }
         .entry {
             padding-left: 0.75rem;
