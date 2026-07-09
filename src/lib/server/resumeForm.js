@@ -42,11 +42,36 @@ function normalizeSkillsGroup(g) {
     return group;
 }
 
+// Parse a year to an integer, or null. Accepts numbers and strings; a blank
+// or non-numeric value (e.g. "Present") becomes null (open-ended / unknown).
+function toYear(v) {
+    if (v === null || v === undefined || v === "") return null;
+    const n = parseInt(String(v).trim(), 10);
+    return Number.isFinite(n) ? n : null;
+}
+
 function normalizeRole(r) {
     return {
         title: String(r?.title || "").trim(),
         dates: String(r?.dates || "").trim(),
+        start: toYear(r?.start),
+        end: toYear(r?.end),
         points: splitLines(r?.points),
+    };
+}
+
+function normalizeEducation(e, index) {
+    const school = String(e?.school || "").trim();
+    let id = slugify(e?.id || "");
+    if (!id) id = `edu-${slugify(school) || index}`;
+    return {
+        id,
+        school,
+        credential: String(e?.credential || "").trim(),
+        dates: String(e?.dates || "").trim(),
+        start: toYear(e?.start),
+        end: toYear(e?.end),
+        points: splitLines(e?.points),
     };
 }
 
@@ -79,5 +104,9 @@ export function parseResumePayload(raw) {
         .map(normalizeJob)
         .filter((j) => j.company || j.roles.length);
 
-    return { resume: { skills, experience } };
+    const education = (Array.isArray(data.education) ? data.education : [])
+        .map(normalizeEducation)
+        .filter((e) => e.school || e.credential || e.points.length);
+
+    return { resume: { skills, experience, education } };
 }

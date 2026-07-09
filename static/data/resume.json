@@ -50,6 +50,8 @@
         {
           "title": "Controls Engineer",
           "dates": "June 2020 – Present",
+          "start": 2020,
+          "end": null,
           "points": [
             "Developed the entire Schneider PLC program and HMI UI to operate ECM fan-array systems for commercial HVAC air-handling units.",
             "Aided in the design and development of electrical control panels for standard and custom jobs following UL 508A standards.",
@@ -68,6 +70,8 @@
         {
           "title": "Mechanical Engineer",
           "dates": "January 2020 – June 2020",
+          "start": 2020,
+          "end": 2020,
           "points": [
             "Worked on the development of fan-array systems for industrial and commercial air-handling units.",
             "Automated product design using the SolidWorks API in Visual Studio; generated .DXF files with sheet-metal punch patterns and bend lines as deliverables.",
@@ -86,6 +90,8 @@
         {
           "title": "Account Specialist",
           "dates": "September 2017 – September 2019",
+          "start": 2017,
+          "end": 2019,
           "points": [
             "Created sales reports and was responsible for loss prevention using QuickBooks.",
             "Audited job profiles to maintain financial accuracy in QuickBooks.",
@@ -102,6 +108,8 @@
         {
           "title": "Mathematics Instructor",
           "dates": "April 2017 – November 2019",
+          "start": 2017,
+          "end": 2019,
           "points": [
             "Instructed and prepared students to succeed in algebra, geometry, trigonometry, and calculus.",
             "Evaluated student performance using customized tests.",
@@ -109,6 +117,29 @@
           ]
         }
       ]
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-placeholder-1",
+      "school": "University / College name",
+      "credential": "B.S. in Your Major",
+      "dates": "20XX – 20XX",
+      "start": 2011,
+      "end": 2015,
+      "points": [
+        "Optional: honors, relevant coursework, GPA, or activities.",
+        "Delete this line or add more — bullets are optional."
+      ]
+    },
+    {
+      "id": "edu-placeholder-2",
+      "school": "High school / other program",
+      "credential": "Diploma / Certificate",
+      "dates": "20XX",
+      "start": 2007,
+      "end": 2011,
+      "points": []
     }
   ]
 }
