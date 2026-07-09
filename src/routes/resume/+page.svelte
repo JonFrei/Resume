@@ -191,10 +191,14 @@
         min-height: 100vh;
         padding-top: var(--nav-height);
     }
-    /* The page split in two: timeline nav | resume content. */
+    /* The page split in two: timeline nav | resume content.
+       Uses the full viewport width (with only edge padding) rather than the
+       narrow --content-max column, so the content panel gets all the room the
+       narrow timeline nav frees up. */
     .resume__split {
-        max-width: var(--content-max);
-        margin: 0 auto;
+        width: 100%;
+        margin: 0;
+        padding: 0 clamp(1rem, 4vw, 3rem);
         display: grid;
         /* Narrower timeline nav column; cards keep their own fixed size (below)
            so trimming the column doesn't shrink them. */
