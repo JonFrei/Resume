@@ -74,3 +74,8 @@ npm run build && npm start     # node build/index.js
 `origin/main` → Railway (`npm run build` → `node build/index.js`).
 Full deploy walkthrough: **[PHASE4.md](PHASE4.md)**. R2/Cloudflare setup:
 **[SETUP.md](SETUP.md)**.
+
+**Env vars** are documented in **[.env.example](.env.example)** — set them as
+Railway service Variables in prod. Note `BODY_SIZE_LIMIT`: adapter-node caps
+request bodies at 512K by default, which is below the 8 MB image-upload limit,
+so it must be raised (e.g. `9437184`) or admin uploads over 512K fail with a 413.

@@ -1,6 +1,7 @@
 <script>
     import { page } from "$app/stores";
     import Nav from "$lib/components/Nav.svelte";
+    import Footer from "$lib/components/Footer.svelte";
     import site from "$lib/data/site.json";
     import { assetUrl } from "$lib/assets.js";
 
@@ -40,6 +41,8 @@
         </div>
     </section>
 </main>
+
+<Footer />
 
 <style>
     .home {

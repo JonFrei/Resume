@@ -7,7 +7,10 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { R2, canUploadToR2 } from "./config.js";
 
-const CONTENT_TYPES = {
+// Maps a lowercase file extension to its image MIME type. Exported so the
+// upload endpoint can validate/derive a content type by extension when the
+// browser reports a generic type (e.g. application/octet-stream).
+export const CONTENT_TYPES = {
     png: "image/png",
     jpg: "image/jpeg",
     jpeg: "image/jpeg",
