@@ -12,13 +12,10 @@
  */
 
 import pg from "pg";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { DATABASE_URL, hasDatabase } from "./config.js";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SEED_PATH = path.resolve(__dirname, "../../../static/data/projects.json");
+// Seed data is imported (bundled by Vite), NOT read from disk — a filesystem
+// path relative to the source breaks once the code is bundled into build/.
+import seedData from "../../../static/data/projects.json" assert { type: "json" };
 
 let pool = null;
 function getPool() {
@@ -96,9 +93,9 @@ function projectToRow(p) {
 /* ---------- Reads ---------- */
 
 // Read the seed JSON (fallback source).
-async function readSeed() {
-    const raw = await readFile(SEED_PATH, "utf8");
-    return JSON.parse(raw).projects;
+function readSeed() {
+    // Return a deep copy so callers can't mutate the shared bundled data.
+    return structuredClone(seedData.projects);
 }
 
 // All projects in display order, in the front-end shape.
@@ -223,8 +220,7 @@ export async function seedFromJson({ force = false } = {}) {
     } else {
         await p.query(`TRUNCATE projects RESTART IDENTITY`);
     }
-    const raw = await readFile(SEED_PATH, "utf8");
-    const { projects } = JSON.parse(raw);
+    const projects = readSeed();
     let i = 0;
     for (const proj of projects) {
         const r = projectToRow(proj);
