@@ -7,13 +7,17 @@
 
 /* -------------------- Design tokens -------------------- */
 :root {
-    /* Brand palette */
-    --jungle-green:   #095256; /* deepest */
-    --seaweed:        #087F8C;
-    --pine:           #5AAA95;
-    --asparagus:      #86A873;
-    --curry:          #F2B441; /* accent (gold) */
-    --curry-dark:     #D89A2A;
+    /* Brand palette — "Slate & Copper".
+       The six tokens keep their historical NAMES but now carry the slate/copper
+       identity: jungle-green→seaweed→pine are a dark-slate ground ramp
+       (deep → mid → light), curry/curry-dark are the copper accent. Token names
+       are kept only for backward-compatible CSS/DB; think of them by role. */
+    --jungle-green:   #161B1F; /* deepest slate ground */
+    --seaweed:        #232B31; /* mid slate */
+    --pine:           #2B333A; /* light slate (raised surfaces, borders) */
+    --asparagus:      #3A444C; /* spare neutral slate (unused in UI) */
+    --curry:          #C2703D; /* accent (copper) */
+    --curry-dark:     #A85C2E; /* copper hover/pressed */
 
     /* Semantic aliases — use these in page CSS, not the raw names */
     --bg-deep:        var(--jungle-green);
@@ -21,21 +25,20 @@
     --bg-light:       var(--pine);
     /* Page-background gradient stops. Editable from the admin theme page so the
        overall page wash can be set independently of the mid/light palette. */
-    --bg-page-start:  #072325;
-    --bg-page-end:    #061c1d;
+    --bg-page-start:  #12171A;
+    --bg-page-end:    #0F1316;
     --accent:         var(--curry);
     --accent-dark:    var(--curry-dark);
     --surface:        var(--jungle-green);
     --text:           #ffffff;
     --text-muted:     #e6e6e6;
-    /* Dark ink for text sitting ON the gold accent (nav, buttons, footer,
-       badges). White-on-gold is ~1.9:1 and illegible; dark ink is ~9:1. */
-    --text-on-accent: #0b1f21;
-    /* Light secondary/heading text for use on the DARK page background. The
-       old dark-teal (--bg-deep) secondary text is invisible on near-black;
-       these replace it. --text-secondary ~9:1, --text-heading ~11:1. */
-    --text-secondary: #9DC3BD;
-    --text-heading:   #CDE7E1;
+    /* Dark ink for text sitting ON the copper accent (nav, buttons, footer,
+       badges). White-on-copper is too low-contrast; dark ink is ~7:1. */
+    --text-on-accent: #160F0A;
+    /* Cool-grey secondary/heading text for use on the DARK slate background.
+       --text-secondary ~9:1, --text-heading ~12:1 on the deep ground. */
+    --text-secondary: #B9C4CA;
+    --text-heading:   #D9E1E6;
 
     /* Layout */
     --nav-height:     56px;

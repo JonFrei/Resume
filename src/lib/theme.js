@@ -13,13 +13,15 @@
 // Ordered list of editable colors. `var` is the CSS custom property name
 // (without the leading --). `group` buckets them in the editor UI.
 export const TOKENS = [
-    // Brand palette (the six core colors).
-    { key: "jungleGreen", var: "jungle-green", label: "Jungle Green (deepest)", group: "Brand palette" },
-    { key: "seaweed",     var: "seaweed",      label: "Seaweed",               group: "Brand palette" },
-    { key: "pine",        var: "pine",         label: "Pine",                  group: "Brand palette" },
-    { key: "asparagus",   var: "asparagus",    label: "Asparagus",             group: "Brand palette" },
-    { key: "curry",       var: "curry",        label: "Curry (accent)",        group: "Brand palette" },
-    { key: "curryDark",   var: "curry-dark",   label: "Curry Dark",            group: "Brand palette" },
+    // Brand palette (the six core colors). Keys keep their historical names for
+    // backward-compatible CSS vars + stored themes; labels describe the current
+    // "Slate & Copper" identity (slate ground ramp + copper accent).
+    { key: "jungleGreen", var: "jungle-green", label: "Slate (deepest ground)", group: "Brand palette" },
+    { key: "seaweed",     var: "seaweed",      label: "Slate (mid)",           group: "Brand palette" },
+    { key: "pine",        var: "pine",         label: "Slate (light surface)", group: "Brand palette" },
+    { key: "asparagus",   var: "asparagus",    label: "Slate (spare / unused)", group: "Brand palette" },
+    { key: "curry",       var: "curry",        label: "Copper (accent)",       group: "Brand palette" },
+    { key: "curryDark",   var: "curry-dark",   label: "Copper Dark",           group: "Brand palette" },
 
     // Page background — the full-page gradient wash behind every page.
     { key: "bgPageStart", var: "bg-page-start", label: "Page background (top)",    group: "Page background" },
@@ -36,19 +38,19 @@ export const TOKENS = [
 // Default values — MUST match the :root declarations in base.css so that an
 // unsaved (fallback) theme is identical to the stylesheet defaults.
 export const DEFAULT_THEME = {
-    jungleGreen: "#095256",
-    seaweed: "#087F8C",
-    pine: "#5AAA95",
-    asparagus: "#86A873",
-    curry: "#F2B441",
-    curryDark: "#D89A2A",
-    bgPageStart: "#072325",
-    bgPageEnd: "#061c1d",
+    jungleGreen: "#161b1f",
+    seaweed: "#232b31",
+    pine: "#2b333a",
+    asparagus: "#3a444c",
+    curry: "#c2703d",
+    curryDark: "#a85c2e",
+    bgPageStart: "#12171a",
+    bgPageEnd: "#0f1316",
     text: "#ffffff",
     textMuted: "#e6e6e6",
-    textOnAccent: "#0b1f21",
-    textSecondary: "#9DC3BD",
-    textHeading: "#CDE7E1",
+    textOnAccent: "#160f0a",
+    textSecondary: "#b9c4ca",
+    textHeading: "#d9e1e6",
 };
 
 const HEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
