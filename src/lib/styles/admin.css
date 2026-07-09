@@ -208,7 +208,9 @@
     border: 2px solid var(--accent);
     border-radius: var(--radius);
     padding: 1rem;
-    background: rgba(9, 82, 86, 0.15);
+    /* Tinted from the deep-ground token so it tracks the theme (was a
+       hardcoded teal rgba that stayed teal after the palette swap). */
+    background: color-mix(in srgb, var(--bg-deep) 15%, transparent);
 }
 
 .fieldset legend {
@@ -266,7 +268,9 @@
 }
 
 .flash--ok {
-    background: rgba(90, 170, 149, 0.3);
+    /* Tinted from --pine so the success flash tracks the theme (was a
+       hardcoded teal-green rgba that stayed teal after the palette swap). */
+    background: color-mix(in srgb, var(--pine) 30%, transparent);
     border: 1px solid var(--pine);
     color: #eaffea;
 }

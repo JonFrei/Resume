@@ -27,6 +27,25 @@ function getPool() {
             connectionString: DATABASE_URL,
             // Railway Postgres requires SSL; allow self-signed in that managed context.
             ssl: DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false },
+            // Fail fast instead of hanging a request (and the Railway healthcheck)
+            // when Postgres is slow or unreachable.
+            connectionTimeoutMillis: 5000,
+            // Cap any single query so a slow/locked statement can't stall a page
+            // render (and thus navigation) indefinitely.
+            statement_timeout: 8000,
+            query_timeout: 8000,
+            // Recycle idle connections so Railway's proxy doesn't silently drop
+            // long-lived ones out from under us.
+            idleTimeoutMillis: 30000,
+            max: 10,
+        });
+        // A pg Pool emits 'error' when an IDLE backend connection dies (Railway
+        // recycles these routinely). With no listener, Node treats it as an
+        // unhandled 'error' event and crashes the whole process — which is what
+        // was killing the container seconds after boot. Log and swallow: the
+        // pool transparently opens a fresh connection on the next query.
+        pool.on("error", (err) => {
+            console.error("pg pool idle-client error (recovering):", err.message);
         });
     }
     return pool;
