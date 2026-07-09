@@ -9,8 +9,12 @@ export const ASSET_BASE_URL = (process.env.ASSET_BASE_URL || "").replace(/\/$/, 
 // is attached). If absent, the app falls back to the seed JSON (see db.js).
 export const DATABASE_URL = process.env.DATABASE_URL || "";
 
-// Admin auth. ADMIN_PASSWORD_HASH is an argon2 hash (see scripts/hash-password.mjs).
+// Admin auth. Two ways to configure the password:
+//   ADMIN_PASSWORD_HASH — an argon2 hash (see scripts/hash-password.mjs). Preferred.
+//   PASSWORD            — a plaintext fallback, used only when no hash is set.
+// If both are present, the hash wins.
 export const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || "";
+export const ADMIN_PASSWORD_PLAIN = process.env.PASSWORD || "";
 // Secret used to sign session cookies. MUST be set in production.
 export const SESSION_SECRET = process.env.SESSION_SECRET || "";
 

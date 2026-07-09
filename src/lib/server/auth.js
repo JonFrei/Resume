@@ -1,13 +1,22 @@
 /* auth.js — single-admin password auth with signed session cookies.
  *
- * Flow: POST password -> verify against ADMIN_PASSWORD_HASH (argon2) -> issue a
- * signed, httpOnly cookie whose value is an HMAC of an expiry timestamp. No DB
- * session table needed for a one-admin site; the signature is the session.
+ * Flow: POST password -> verify against the admin password -> issue a signed,
+ * httpOnly cookie whose value is an HMAC of an expiry timestamp. No DB session
+ * table needed for a one-admin site; the signature is the session.
+ *
+ * The admin password can be configured two ways:
+ *   ADMIN_PASSWORD_HASH — argon2 hash (preferred; nothing sensitive stored).
+ *   PASSWORD            — plaintext fallback, used only when no hash is set.
  */
 
 import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 import { verify as argonVerify } from "@node-rs/argon2";
-import { ADMIN_PASSWORD_HASH, SESSION_SECRET, isProd } from "./config.js";
+import {
+    ADMIN_PASSWORD_HASH,
+    ADMIN_PASSWORD_PLAIN,
+    SESSION_SECRET,
+    isProd,
+} from "./config.js";
 
 export const SESSION_COOKIE = "admin_session";
 const SESSION_TTL_MS = 1000 * 60 * 60 * 8; // 8 hours
@@ -17,18 +26,33 @@ const SESSION_TTL_MS = 1000 * 60 * 60 * 8; // 8 hours
 const SECRET = SESSION_SECRET || (isProd ? "" : randomBytes(32).toString("hex"));
 
 export function authConfigured() {
-    return Boolean(ADMIN_PASSWORD_HASH && SECRET);
+    return Boolean((ADMIN_PASSWORD_HASH || ADMIN_PASSWORD_PLAIN) && SECRET);
 }
 
 /* ---------- Password ---------- */
 
+// Constant-time string comparison for the plaintext path.
+function safeEqual(a, b) {
+    const ab = Buffer.from(String(a));
+    const bb = Buffer.from(String(b));
+    if (ab.length !== bb.length) return false;
+    return timingSafeEqual(ab, bb);
+}
+
 export async function verifyPassword(password) {
-    if (!ADMIN_PASSWORD_HASH) return false;
-    try {
-        return await argonVerify(ADMIN_PASSWORD_HASH, password);
-    } catch {
-        return false;
+    // Prefer the hash when configured.
+    if (ADMIN_PASSWORD_HASH) {
+        try {
+            return await argonVerify(ADMIN_PASSWORD_HASH, password);
+        } catch {
+            return false;
+        }
     }
+    // Plaintext fallback (only when no hash is set).
+    if (ADMIN_PASSWORD_PLAIN) {
+        return safeEqual(password, ADMIN_PASSWORD_PLAIN);
+    }
+    return false;
 }
 
 /* ---------- Session token: "<expiryMs>.<hmac>" ---------- */
