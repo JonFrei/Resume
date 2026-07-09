@@ -617,10 +617,20 @@
             height: auto;
             grid-template-columns: 1fr;
             align-items: start;
+            /* A single-column grid track defaults to min-width:auto, so the wide
+               timeline strip + content would blow the track past the viewport
+               (horizontal-scroll bug). Cap it to the container width. */
+            min-width: 0;
         }
         .resume__content {
             height: auto;
             overflow: visible;
+            /* Same reason: let this grid child shrink below its content's
+               intrinsic width instead of forcing the page wider. */
+            min-width: 0;
+        }
+        .tl {
+            min-width: 0;
         }
         /* Timeline becomes a horizontal, scrollable strip pinned under the nav. */
         .tl {

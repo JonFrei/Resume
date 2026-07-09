@@ -105,6 +105,10 @@
     }
 
     .project-card__body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         padding: 1rem 1.25rem 1.25rem;
         text-align: center;
         background: var(--accent);

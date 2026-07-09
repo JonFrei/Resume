@@ -303,8 +303,44 @@
     padding: 3rem 1rem;
 }
 
+@media (max-width: 720px) {
+    /* Header: let the nav wrap under the brand instead of overflowing the
+       viewport (5 items didn't fit at phone width). The header grows to fit
+       the wrapped rows rather than staying a fixed nav-height bar. */
+    .admin-header {
+        height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+    }
+    .admin-header__nav {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 0.75rem 1rem;
+    }
+    .admin-header__nav form {
+        margin-left: auto;
+    }
+}
+
 @media (max-width: 640px) {
     .row-2 {
         grid-template-columns: 1fr;
+    }
+
+    /* Project list rows: stack the thumb/meta above the actions so the buttons
+       don't crush the title into a narrow column. */
+    .pitem {
+        flex-wrap: wrap;
+    }
+    .pitem__meta {
+        /* Force the meta onto its own line next to the thumb; actions wrap below. */
+        flex-basis: calc(100% - 72px - 1rem);
+    }
+    .pitem__actions {
+        width: 100%;
+        justify-content: flex-end;
     }
 }

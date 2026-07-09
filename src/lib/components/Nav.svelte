@@ -18,6 +18,29 @@
     function onKeydown(e) {
         if (e.key === "Escape") close();
     }
+
+    // Scroll to a same-page fragment (e.g. #contact) ourselves instead of letting
+    // the anchor's default hash navigation run.
+    //
+    // Why: on /resume the footer (#contact) lives INSIDE a nested overflow:auto
+    // pane (.resume__content), while the page root is height:100vh; overflow:hidden.
+    // The document itself can't scroll to reach it, so SvelteKit's hash-nav scroll
+    // handling never settles — it thrashes history (popstate/replaceState) and the
+    // router stops processing further navigations. The page appears frozen with no
+    // console error. Scrolling the element into view directly (which walks up to
+    // whichever ancestor actually scrolls) sidesteps the router entirely.
+    function onNavClick(e, href) {
+        if (!href.startsWith("#")) {
+            close();
+            return;
+        }
+        e.preventDefault();
+        close();
+        const id = href.slice(1);
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
 </script>
 
 <svelte:window on:keydown={onKeydown} />
@@ -33,7 +56,7 @@
                         class="nav__link"
                         href={item.href}
                         aria-current={isCurrent(item.href, path) ? "page" : undefined}
-                        on:click={close}
+                        on:click={(e) => onNavClick(e, item.href)}
                     >{item.label}</a>
                 </li>
             {/each}

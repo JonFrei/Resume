@@ -699,11 +699,16 @@
 
     /* ===================== RESPONSIVE ===================== */
     @media (max-width: 820px) {
-        .resume__split { grid-template-columns: 1fr; }
+        /* min-width:0 lets the single-column grid track (and its children) shrink
+           to the canvas width instead of being forced wider by the timeline strip
+           / content, which the canvas frame would otherwise clip. */
+        .resume__split { grid-template-columns: 1fr; min-width: 0; }
+        .resume__content { min-width: 0; }
         .tl {
             position: static;
             max-height: none;
             overflow: visible;
+            min-width: 0;
             border-right: none;
             border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             padding: 0.75rem 0.5rem 1rem;
