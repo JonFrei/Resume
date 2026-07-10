@@ -250,6 +250,14 @@
 <style>
     .editor-hint { color: var(--text-muted); margin: 0.75rem 0 1rem; font-size: 0.9rem; }
 
+    /* `.ce` inputs inherit `color` from their surrounding real class; some of
+       those (e.g. the tagline uses --bg-deep) are dark-on-dark against the
+       editor canvas and become invisible while typing. Force every editable
+       field to a light, high-contrast color; the non-editable rendered text
+       keeps the real page's colors. */
+    :global(.ce) { color: var(--text); }
+    :global(.ce::placeholder) { color: rgba(255, 255, 255, 0.45); }
+
     /* Settings strip above the canvas */
     .settings {
         display: flex;
