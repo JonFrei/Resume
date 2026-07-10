@@ -212,14 +212,23 @@
 </div>
 
 <style>
-    .export-page { padding-bottom: 3rem; }
+    /* Full-bleed: use the whole display width instead of the 1160px
+       .admin-wrap--wide cap, so the header editor + PDF preview get maximum room. */
+    .export-page {
+        max-width: none;
+        padding-bottom: 3rem;
+        padding-left: clamp(0.75rem, 2vw, 1.5rem);
+        padding-right: clamp(0.75rem, 2vw, 1.5rem);
+    }
     .editor-hint { color: var(--text-muted); margin: 0.5rem 0 1.25rem; font-size: 0.9rem; }
     .editor-hint a { color: var(--accent); }
     .editor-hint--sm { margin: 0.6rem 0 0; font-size: 0.82rem; }
 
+    /* Header editor gets just enough width for its short fields; the preview
+       column takes ALL remaining space so the PDF is as large as possible. */
     .export-grid {
         display: grid;
-        grid-template-columns: minmax(320px, 440px) 1fr;
+        grid-template-columns: minmax(300px, 380px) 1fr;
         gap: clamp(1.25rem, 3vw, 2.5rem);
         align-items: start;
     }
@@ -277,17 +286,19 @@
     .preview__scroll {
         background: #e5e7eb;
         border-radius: var(--radius);
-        padding: 1.25rem;
-        max-height: calc(100vh - 12rem);
+        padding: clamp(1rem, 2vw, 2rem);
+        max-height: calc(100vh - 10rem);
         overflow: auto;
     }
     /* Mirrors routes/resume/print sheet styling so the preview matches the PDF.
-       Width is the true 8.5in page; the flex column lets it shrink on narrow
-       screens while keeping the paper proportions. */
+       The sheet fills the (now wide) preview column rather than being pinned at
+       8.5in, so it's as large as the space allows; it still centers and caps at a
+       comfortable reading width so it never becomes absurdly wide on huge
+       monitors. Padding scales in real inches so proportions stay page-accurate. */
     .sheet {
         box-sizing: border-box;
-        width: 8.5in;
-        max-width: 100%;
+        width: 100%;
+        max-width: 1100px;
         margin: 0 auto;
         padding: 0.55in 0.6in;
         background: #fff;

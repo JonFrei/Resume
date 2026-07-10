@@ -22,9 +22,15 @@
 <slot />
 
 <style>
-    /* Constrain just the header + tabs to the standard wide width; each child
-       page manages its own canvas width below (the Web editor goes full-bleed). */
-    .resume-subnav-wrap { padding-bottom: 0; }
+    /* Full-bleed: the header + tabs span the whole display area (matching the
+       full-width canvas editors below), instead of the 1160px .admin-wrap--wide
+       cap. Each child page manages its own width below. */
+    .resume-subnav-wrap {
+        max-width: none;
+        padding-bottom: 0;
+        padding-left: clamp(0.75rem, 2vw, 1.5rem);
+        padding-right: clamp(0.75rem, 2vw, 1.5rem);
+    }
 
     .subtabs {
         display: flex;
