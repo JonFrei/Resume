@@ -1,7 +1,13 @@
 <script>
+    import { resumeFontStack } from "$lib/resumeFonts.js";
+
     export let data;
     $: resume = data.resume;
     $: heading = resume.heading || {};
+
+    // Resolve the header's chosen font to a CSS stack, applied to .sheet so the
+    // printed PDF uses the font selected on the admin Export tab.
+    $: fontStack = resumeFontStack(heading.font);
 
     // Build one chronologically-sorted list from experience roles + education,
     // mirroring the live /resume page's ordering (newest end first; a null end
@@ -69,7 +75,7 @@
     <button class="tbtn" type="button" on:click={print}>Print / Save as PDF</button>
 </div>
 
-<div class="sheet">
+<div class="sheet" style="font-family: {fontStack};">
     <!-- ===================== HEADER ===================== -->
     <header class="rhead">
         {#if heading.name}<h1 class="rhead__name">{heading.name}</h1>{/if}

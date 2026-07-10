@@ -3,6 +3,14 @@
  * (the whole resume object assembled client-side), preserving the nested
  * skills/experience shape without a flat form encoding. */
 
+import { RESUME_FONTS, RESUME_FONT_KEYS } from "$lib/resumeFonts.js";
+
+// Validate a font key against the known set; anything else becomes the default.
+function normalizeFont(v) {
+    const k = String(v || "").trim();
+    return RESUME_FONT_KEYS.has(k) ? k : RESUME_FONTS[0].key;
+}
+
 function slugify(s) {
     return String(s)
         .toLowerCase()
@@ -98,6 +106,7 @@ function normalizeHeading(h) {
         email: String(h?.email || "").trim(),
         phone: String(h?.phone || "").trim(),
         location: String(h?.location || "").trim(),
+        font: normalizeFont(h?.font),
         links,
     };
 }

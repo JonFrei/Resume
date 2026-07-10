@@ -1,6 +1,7 @@
 <script>
     import { enhance } from "$app/forms";
     import { page } from "$app/stores";
+    import { RESUME_FONTS, resumeFontStack } from "$lib/resumeFonts.js";
 
     export let data;
     export let form;
@@ -16,6 +17,7 @@
         email: data.resume.heading?.email || "",
         phone: data.resume.heading?.phone || "",
         location: data.resume.heading?.location || "",
+        font: data.resume.heading?.font || RESUME_FONTS[0].key,
         links: (data.resume.heading?.links || []).map((l) => ({
             label: l.label || "",
             href: l.href || "",
@@ -25,6 +27,10 @@
     const removeLink = (i) => (heading.links = heading.links.filter((_, x) => x !== i));
 
     $: payload = JSON.stringify({ heading });
+
+    // Resolve the chosen font key to a CSS stack, applied to the preview sheet
+    // below so it matches what the printable PDF will use.
+    $: fontStack = resumeFontStack(heading.font);
 
     // ---- Preview: same chronological merge + shape the /resume/print page uses.
     // The header reflects live edits above; content is the saved resume (edited
@@ -104,6 +110,12 @@
                         <input class="fldinput" bind:value={heading.phone} placeholder="(optional)" /></label>
                     <label class="fld"><span>Location</span>
                         <input class="fldinput" bind:value={heading.location} placeholder="City, ST (optional)" /></label>
+                    <label class="fld fld--wide"><span>Font</span>
+                        <select class="fldinput" bind:value={heading.font}>
+                            {#each RESUME_FONTS as f}
+                                <option value={f.key}>{f.label}</option>
+                            {/each}
+                        </select></label>
                 </div>
 
                 <div class="links">
@@ -138,7 +150,7 @@
         <div class="preview">
             <p class="preview__label">PDF preview</p>
             <div class="preview__scroll">
-                <div class="sheet">
+                <div class="sheet" style="font-family: {fontStack};">
                     <header class="rhead">
                         {#if heading.name}<h1 class="rhead__name">{heading.name}</h1>{/if}
                         {#if heading.title}<p class="rhead__title">{heading.title}</p>{/if}
@@ -270,6 +282,10 @@
         transition: border-color 0.15s ease, background 0.15s ease;
     }
     .fldinput::placeholder { color: rgba(255, 255, 255, 0.45); }
+    /* The font <select> shares .fldinput styling; force a native appearance and
+       readable option colors so the dropdown list isn't white-on-white. */
+    select.fldinput { appearance: none; cursor: pointer; }
+    select.fldinput option { color: #1a1a1a; background: #fff; }
     .fldinput:hover { border-color: rgba(255, 255, 255, 0.7); }
     .fldinput:focus {
         outline: none;
