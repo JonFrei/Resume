@@ -7,9 +7,8 @@
     export let data;
     export let form;
 
-    // Public-site origin (set in prod where admin lives on its own host). Admin
-    // links to public routes must be absolute against it, else a relative path on
-    // the admin host is redirected back to /admin. Empty in dev => relative links.
+    // Public-site origin so the "Open live page" link points at the public host
+    // (a relative link on the admin host is redirected back to /admin).
     $: siteBase = $page.data.siteUrl || "";
 
     // =====================================================================
@@ -31,22 +30,6 @@
         if (it && typeof it === "object") return { text: it.text || "", tag: it.tag || "" };
         return { text: String(it), tag: "" };
     }
-
-    // Resume header (identity + contact). Shown on the print/PDF layout; not on
-    // the live timeline page. Backfilled by the server, so it's always present.
-    let heading = {
-        name: data.resume.heading?.name || "",
-        title: data.resume.heading?.title || "",
-        email: data.resume.heading?.email || "",
-        phone: data.resume.heading?.phone || "",
-        location: data.resume.heading?.location || "",
-        links: (data.resume.heading?.links || []).map((l) => ({
-            label: l.label || "",
-            href: l.href || "",
-        })),
-    };
-    const addLink = () => (heading.links = [...heading.links, { label: "", href: "" }]);
-    const removeLink = (i) => (heading.links = heading.links.filter((_, x) => x !== i));
 
     let skills = (data.resume.skills || []).map((g) => ({
         heading: g.heading || "",
@@ -207,9 +190,9 @@
     // --- Serialize back to the grouped payload parseResumePayload expects. ---
     const slugify = (s) => String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-    $: payload = (rev, JSON.stringify(buildPayload(heading, skills, entries)));
+    $: payload = (rev, JSON.stringify(buildPayload(skills, entries)));
 
-    function buildPayload(hd, sk, ents) {
+    function buildPayload(sk, ents) {
         const experienceGroups = [];
         const byKey = new Map();
         const education = [];
@@ -249,14 +232,6 @@
         }
 
         return {
-            heading: {
-                name: hd.name,
-                title: hd.title,
-                email: hd.email,
-                phone: hd.phone,
-                location: hd.location,
-                links: hd.links.filter((l) => l.label.trim() || l.href.trim()),
-            },
             skills: sk.map((g) => ({
                 heading: g.heading,
                 style: g.tags ? "tags" : undefined,
@@ -278,11 +253,6 @@
 <svelte:head><title>Resume — Admin</title></svelte:head>
 
 <div class="admin-wrap admin-wrap--wide resume-editor">
-    <div class="admin-row">
-        <h1 class="admin-title">Resume</h1>
-        <a class="btn btn-sm" href="/admin">← Back</a>
-    </div>
-
     {#if !data.hasDatabase}
         <p class="flash flash--err">
             No database is configured (DATABASE_URL unset). You can edit here, but
@@ -298,7 +268,7 @@
         page. Hover an entry for its add / remove controls.
     </p>
 
-    <form method="POST" use:enhance={submit} on:input={touch}>
+    <form method="POST" action="?/content" use:enhance={submit} on:input={touch}>
         <input type="hidden" name="payload" value={payload} />
 
         <div class="canvas">
@@ -306,48 +276,6 @@
                 <span class="canvas__dot"></span><span class="canvas__dot"></span><span class="canvas__dot"></span>
                 <span class="canvas__url">jonathan-freier.com/resume</span>
             </div>
-
-            <!-- ================= RESUME HEADER (print/PDF only) ================= -->
-            <!-- These fields do NOT appear on the live timeline page; they head
-                 the printable resume at /resume/print. Edited here so the whole
-                 resume (content + header) lives in one editor. -->
-            <section class="pdfhead editable">
-                <p class="pdfhead__label">Resume header <span class="pdfhead__note">— shown on the printable PDF, not the live timeline page</span></p>
-                <div class="pdfhead__grid">
-                    <label class="fld fld--wide">
-                        <span>Name</span>
-                        <input class="ce fldinput" bind:value={heading.name} placeholder="Jonathan Freier" />
-                    </label>
-                    <label class="fld fld--wide">
-                        <span>Title</span>
-                        <input class="ce fldinput" bind:value={heading.title} placeholder="Controls Engineer & Developer" />
-                    </label>
-                    <label class="fld">
-                        <span>Email</span>
-                        <input class="ce fldinput" bind:value={heading.email} placeholder="you@example.com" />
-                    </label>
-                    <label class="fld">
-                        <span>Phone</span>
-                        <input class="ce fldinput" bind:value={heading.phone} placeholder="(optional)" />
-                    </label>
-                    <label class="fld">
-                        <span>Location</span>
-                        <input class="ce fldinput" bind:value={heading.location} placeholder="City, ST (optional)" />
-                    </label>
-                </div>
-
-                <div class="pdfhead__links">
-                    <span class="pdfhead__linkslabel">Links</span>
-                    {#each heading.links as l, li (li)}
-                        <div class="linkrow">
-                            <input class="ce fldinput" bind:value={l.label} placeholder="LinkedIn" />
-                            <input class="ce fldinput linkrow__href" bind:value={l.href} placeholder="https://…" />
-                            <button class="iconbtn iconbtn--danger" type="button" title="Remove link" on:click={() => removeLink(li)}>✕</button>
-                        </div>
-                    {/each}
-                    <button class="add-inline" type="button" on:click={addLink}>＋ link</button>
-                </div>
-            </section>
 
             <main class="resume">
                 <div class="resume__split">
@@ -480,13 +408,7 @@
                 {saving ? "Saving…" : "Save resume"}
             </button>
             <a class="btn btn-sm" href="{siteBase}/resume/" target="_blank" rel="noopener">Open live page ↗</a>
-            <a class="btn btn-sm" href="{siteBase}/resume/print" target="_blank" rel="noopener">Export PDF ↗</a>
         </div>
-        <p class="editor-hint editor-hint--pdf">
-            “Export PDF” opens the printable, single-page-optimized resume in a new
-            tab. Use your browser’s Print → “Save as PDF” to download it. Save your
-            changes first so the PDF reflects them.
-        </p>
     </form>
 </div>
 
@@ -501,64 +423,6 @@
     }
 
     .editor-hint { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem; }
-    .editor-hint--pdf { margin: 0.75rem 0 0; }
-
-    /* ===================== RESUME HEADER FIELDS (print/PDF) ===================== */
-    /* Sits at the top of the editing canvas, above the live-mirror layout. Styled
-       as a compact form panel so it reads as distinct from the timeline preview. */
-    .pdfhead {
-        margin: 0 auto;
-        padding: clamp(1rem, 3vw, 1.5rem);
-        background: rgba(0, 0, 0, 0.25);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    .pdfhead__label {
-        margin: 0 0 0.9rem;
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        font-weight: 700;
-        color: var(--accent);
-    }
-    .pdfhead__note { color: var(--text-muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
-    .pdfhead__grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 0.75rem 1rem;
-    }
-    .fld { display: flex; flex-direction: column; gap: 0.25rem; }
-    .fld--wide { grid-column: span 2; min-width: 0; }
-    .fld > span {
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: var(--text-muted);
-        letter-spacing: 0.04em;
-    }
-    .fldinput {
-        color: var(--text);
-        background: rgba(0, 0, 0, 0.28);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: var(--radius);
-        padding: 0.4rem 0.55rem;
-        font-size: 0.95rem;
-    }
-    .fldinput::placeholder { color: rgba(255, 255, 255, 0.4); }
-    .pdfhead__links { margin-top: 1rem; }
-    .pdfhead__linkslabel {
-        display: block;
-        margin-bottom: 0.4rem;
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: var(--text-muted);
-        letter-spacing: 0.04em;
-    }
-    .linkrow { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
-    .linkrow .fldinput { flex: 0 0 12ch; }
-    .linkrow__href { flex: 1 1 auto !important; min-width: 0; }
-    @media (max-width: 620px) {
-        .fld--wide { grid-column: span 1; }
-    }
 
     /* Editable fields sit on the dark canvas. `.ce` inherits `color` from its
        surrounding real class, and some of those (roles, dates, skill headings)

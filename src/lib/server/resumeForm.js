@@ -112,16 +112,21 @@ function normalizeJob(j, index) {
     return { id, company, roles };
 }
 
-// Parse and normalize; returns { resume } or { error }.
-export function parseResumePayload(raw) {
-    let data;
+function parseJson(raw) {
     try {
-        data = JSON.parse(raw);
+        return { data: JSON.parse(raw) };
     } catch {
         return { error: "Invalid form data." };
     }
+}
 
-    const heading = normalizeHeading(data.heading);
+// Parse just the resume CONTENT (skills + experience + education) from the Web
+// editor payload. The header is edited separately (Export tab), so it is NOT
+// touched here — callers merge this onto the stored resume. Returns { content }
+// or { error }.
+export function parseResumeContent(raw) {
+    const { data, error } = parseJson(raw);
+    if (error) return { error };
 
     const skills = (Array.isArray(data.skills) ? data.skills : [])
         .map(normalizeSkillsGroup)
@@ -135,5 +140,24 @@ export function parseResumePayload(raw) {
         .map(normalizeEducation)
         .filter((e) => e.school || e.credential || e.points.length);
 
-    return { resume: { heading, skills, experience, education } };
+    return { content: { skills, experience, education } };
+}
+
+// Parse just the resume HEADER (identity + contact) from the Export editor
+// payload. Content is edited separately (Web tab), so it is NOT touched here.
+// Returns { heading } or { error }.
+export function parseResumeHeading(raw) {
+    const { data, error } = parseJson(raw);
+    if (error) return { error };
+    return { heading: normalizeHeading(data.heading) };
+}
+
+// Parse a FULL resume payload ({ heading, skills, experience, education }).
+// Retained for any caller that assembles the whole resume at once. Returns
+// { resume } or { error }.
+export function parseResumePayload(raw) {
+    const { content, error } = parseResumeContent(raw);
+    if (error) return { error };
+    const { heading } = parseResumeHeading(raw);
+    return { resume: { heading, ...content } };
 }
