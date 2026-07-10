@@ -127,7 +127,7 @@
                                     href={`#${n.id}`}
                                     aria-current={activeId === n.id ? "true" : undefined}
                                 >
-                                    <span class="tlnode__kind">{n.kind === "education" ? "Schooling" : "Experience"}</span>
+                                    <span class="tlnode__kind">{n.kind === "education" ? "Education" : "Experience"}</span>
                                     <span class="tlnode__title">{n.title}</span>
                                     {#if n.subtitle}<span class="tlnode__sub">{n.subtitle}</span>{/if}
                                     {#if n.dates}<span class="tlnode__dates">{n.dates}</span>{/if}
@@ -173,7 +173,7 @@
                         class:entry--active={activeId === n.id}
                     >
                         <div class="entry__head">
-                            <span class="entry__badge">{n.kind === "education" ? "Schooling" : "Experience"}</span>
+                            <span class="entry__badge">{n.kind === "education" ? "Education" : "Experience"}</span>
                             <h3 class="entry__title">{n.title}</h3>
                         </div>
                         <div class="entry__meta">

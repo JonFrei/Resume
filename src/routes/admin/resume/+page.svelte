@@ -125,7 +125,18 @@
         return years.length ? String(Math.min(...years)) : "";
     }
 
-    const kindLabel = (k) => (k === "education" ? "Schooling" : "Experience");
+    const kindLabel = (k) => (k === "education" ? "Education" : "Experience");
+
+    // What the timeline card shows for dates: the free-text `dates` field if the
+    // user typed one, otherwise a derived "start – end" from the year fields so
+    // editing the years is immediately reflected on the card (end blank = Present).
+    function cardDates(entry) {
+        if (entry.dates && entry.dates.trim()) return entry.dates;
+        const s = entry.start === "" || entry.start == null ? "" : String(entry.start);
+        const e = entry.end === "" || entry.end == null ? "Present" : String(entry.end);
+        if (!s && (e === "Present" || !e)) return "";
+        return `${s || "?"} – ${e}`;
+    }
 
     // --- Mutations (operate on `entries`; the sorted `nodes` view follows). ---
     function move(arr, i, dir) {
@@ -286,7 +297,7 @@
                                                 <span class="tlnode__kind">{kindLabel(n.kind)}</span>
                                                 <span class="tlnode__title">{n.entry.company || "Untitled"}</span>
                                                 {#if n.entry.title}<span class="tlnode__sub">{n.entry.title}</span>{/if}
-                                                {#if n.entry.dates}<span class="tlnode__dates">{n.entry.dates}</span>{/if}
+                                                {#if (rev, cardDates(n.entry))}<span class="tlnode__dates">{cardDates(n.entry)}</span>{/if}
                                             </a>
                                         </li>
                                     {/each}
@@ -412,6 +423,20 @@
     }
 
     .editor-hint { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem; }
+
+    /* Editable fields sit on the dark canvas. `.ce` inherits `color` from its
+       surrounding real class, and some of those (roles, dates, skill headings)
+       are dark-on-dark here — unreadable. Force editable inputs to a light,
+       high-contrast color so every field stands out from the background while
+       the non-editable rendered text keeps the real page's colors. */
+    .resume-editor :global(.ce) { color: var(--text); }
+    .resume-editor :global(.ce::placeholder) { color: rgba(255, 255, 255, 0.45); }
+    /* Give the year number fields a faint filled box so they read as fields. */
+    .resume-editor .yearfield {
+        color: var(--text);
+        background: rgba(0, 0, 0, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+    }
 
     /* =====================================================================
        Mirror of routes/resume/+page.svelte. The class structure + styling
