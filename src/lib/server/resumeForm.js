@@ -79,7 +79,9 @@ function normalizeEducation(e, index) {
 function normalizeLink(l) {
     return {
         label: String(l?.label || "").trim(),
-        href: String(l?.href || "").trim(),
+        // Strip ALL whitespace: the href is edited in a wrapping textarea, so a
+        // stray newline/space (URLs contain neither) must not corrupt the link.
+        href: String(l?.href || "").replace(/\s+/g, ""),
     };
 }
 

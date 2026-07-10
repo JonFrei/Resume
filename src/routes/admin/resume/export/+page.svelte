@@ -110,8 +110,11 @@
                     <span class="links__label">Links</span>
                     {#each heading.links as l, li (li)}
                         <div class="linkrow">
-                            <input class="fldinput" bind:value={l.label} placeholder="LinkedIn" />
-                            <input class="fldinput linkrow__href" bind:value={l.href} placeholder="https://…" />
+                            <div class="linkrow__fields">
+                                <input class="fldinput" bind:value={l.label} placeholder="Label (e.g. LinkedIn)" />
+                                <!-- textarea (not input) so a long URL wraps and is fully visible -->
+                                <textarea class="fldinput linkrow__url" rows="2" bind:value={l.href} placeholder="https://…"></textarea>
+                            </div>
                             <button class="iconbtn iconbtn--danger" type="button" title="Remove link" on:click={() => removeLink(li)}>✕</button>
                         </div>
                     {/each}
@@ -254,20 +257,43 @@
     .fld > span { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em; }
     .fldinput {
         color: var(--text);
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.25);
+        /* Lifted fill + a stronger, brighter border so each field reads as a
+           distinct box against the dark card (the old 0.25-alpha 1px hairline
+           nearly vanished). */
+        background: rgba(0, 0, 0, 0.4);
+        border: 1.5px solid rgba(255, 255, 255, 0.5);
         border-radius: var(--radius);
         padding: 0.45rem 0.6rem;
         font-size: 0.95rem;
         width: 100%;
         box-sizing: border-box;
+        transition: border-color 0.15s ease, background 0.15s ease;
     }
-    .fldinput::placeholder { color: rgba(255, 255, 255, 0.4); }
+    .fldinput::placeholder { color: rgba(255, 255, 255, 0.45); }
+    .fldinput:hover { border-color: rgba(255, 255, 255, 0.7); }
+    .fldinput:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: rgba(0, 0, 0, 0.55);
+    }
     .links { margin-top: 1rem; }
     .links__label { display: block; margin-bottom: 0.4rem; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em; }
-    .linkrow { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
-    .linkrow .fldinput { flex: 0 0 11ch; }
-    .linkrow__href { flex: 1 1 auto !important; min-width: 0; }
+    /* Label + URL stacked so the URL field gets the FULL column width and long
+       links (e.g. a full LinkedIn URL) are visible; the remove button sits beside
+       the pair. */
+    .linkrow { display: flex; gap: 0.5rem; align-items: stretch; margin-bottom: 0.75rem; }
+    .linkrow__fields { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+    .linkrow .iconbtn { flex: 0 0 auto; align-self: center; }
+    /* The URL is a wrapping textarea so a long link is fully visible; break on
+       any character (URLs have no spaces) and disable manual resize. */
+    .linkrow__url {
+        resize: none;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        line-height: 1.4;
+        word-break: break-all;
+        white-space: pre-wrap;
+    }
 
     .save-bar { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-top: 1.25rem; }
 
