@@ -1,10 +1,16 @@
 <script>
     import { enhance } from "$app/forms";
+    import { page } from "$app/stores";
     import { autogrow } from "$lib/actions/autogrow.js";
     import "$lib/styles/editor-canvas.css";
 
     export let data;
     export let form;
+
+    // Public-site origin (set in prod where admin lives on its own host). Admin
+    // links to public routes must be absolute against it, else a relative path on
+    // the admin host is redirected back to /admin. Empty in dev => relative links.
+    $: siteBase = $page.data.siteUrl || "";
 
     // =====================================================================
     // Editable state.
@@ -473,8 +479,8 @@
             <button class="btn btn--solid" type="submit" disabled={saving || !data.hasDatabase}>
                 {saving ? "Saving…" : "Save resume"}
             </button>
-            <a class="btn btn-sm" href="/resume/" target="_blank" rel="noopener">Open live page ↗</a>
-            <a class="btn btn-sm" href="/resume/print" target="_blank" rel="noopener">Export PDF ↗</a>
+            <a class="btn btn-sm" href="{siteBase}/resume/" target="_blank" rel="noopener">Open live page ↗</a>
+            <a class="btn btn-sm" href="{siteBase}/resume/print" target="_blank" rel="noopener">Export PDF ↗</a>
         </div>
         <p class="editor-hint editor-hint--pdf">
             “Export PDF” opens the printable, single-page-optimized resume in a new

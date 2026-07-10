@@ -40,6 +40,22 @@ export const R2 = {
 // main site (useful for local dev).
 export const ADMIN_HOST = (process.env.ADMIN_HOST || "").toLowerCase();
 
+// Absolute origin of the PUBLIC site (e.g. https://jonathan-freier.com). Needed
+// so admin pages — which live on ADMIN_HOST — can link to public routes with an
+// absolute URL; a relative "/resume" on the admin host is redirected back to
+// /admin by hooks. When PUBLIC_SITE_URL is unset but ADMIN_HOST looks like an
+// "admin." subdomain, derive the site origin by stripping that prefix. Empty in
+// local dev (admin + site share one host) so links can stay relative.
+function derivePublicSiteUrl() {
+    const explicit = (process.env.PUBLIC_SITE_URL || "").trim().replace(/\/$/, "");
+    if (explicit) return explicit;
+    if (ADMIN_HOST.startsWith("admin.")) {
+        return `https://${ADMIN_HOST.slice("admin.".length)}`;
+    }
+    return "";
+}
+export const PUBLIC_SITE_URL = derivePublicSiteUrl();
+
 export const isProd = process.env.NODE_ENV === "production";
 
 // True when a real database is configured.

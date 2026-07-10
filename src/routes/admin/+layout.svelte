@@ -3,6 +3,10 @@
     import "$lib/styles/admin.css";
 
     $: showChrome = $page.url.pathname !== "/admin/login";
+    // Public-site origin; admin lives on its own host in prod, so "View site"
+    // must be absolute (a relative "/" here redirects back to /admin). Empty in
+    // dev where admin + site share a host.
+    $: siteBase = $page.data.siteUrl || "";
 </script>
 
 {#if showChrome}
@@ -12,7 +16,7 @@
             <a href="/admin" class:active={$page.url.pathname === "/admin" || $page.url.pathname.startsWith("/admin/projects")}>Projects</a>
             <a href="/admin/resume" class:active={$page.url.pathname.startsWith("/admin/resume")}>Resume</a>
             <a href="/admin/theme" class:active={$page.url.pathname.startsWith("/admin/theme")}>Theme</a>
-            <a href="/" target="_blank" rel="noopener">View site ↗</a>
+            <a href="{siteBase}/" target="_blank" rel="noopener">View site ↗</a>
             <form method="POST" action="/admin/logout">
                 <button class="admin-header__logout" type="submit">Log out</button>
             </form>
