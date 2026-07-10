@@ -1,4 +1,14 @@
 {
+  "heading": {
+    "name": "Jonathan Freier",
+    "title": "Controls Engineer & Developer",
+    "email": "freierjohn1993@gmail.com",
+    "phone": "",
+    "location": "",
+    "links": [
+      { "label": "LinkedIn", "href": "https://www.linkedin.com/in/jonathan-freier-2b8013171" }
+    ]
+  },
   "skills": [
     {
       "heading": "Certifications",

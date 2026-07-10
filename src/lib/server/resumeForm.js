@@ -75,6 +75,31 @@ function normalizeEducation(e, index) {
     };
 }
 
+// A header link is { label, href }. Empty entries are dropped by the caller.
+function normalizeLink(l) {
+    return {
+        label: String(l?.label || "").trim(),
+        href: String(l?.href || "").trim(),
+    };
+}
+
+// The resume header: identity + contact line shown at the top of the print
+// (and any future header-bearing) layout. All fields optional so a partial
+// header still renders cleanly.
+function normalizeHeading(h) {
+    const links = (Array.isArray(h?.links) ? h.links : [])
+        .map(normalizeLink)
+        .filter((l) => l.label || l.href);
+    return {
+        name: String(h?.name || "").trim(),
+        title: String(h?.title || "").trim(),
+        email: String(h?.email || "").trim(),
+        phone: String(h?.phone || "").trim(),
+        location: String(h?.location || "").trim(),
+        links,
+    };
+}
+
 function normalizeJob(j, index) {
     const company = String(j?.company || "").trim();
     // Keep a stable anchor id; derive from company if missing so in-page
@@ -96,6 +121,8 @@ export function parseResumePayload(raw) {
         return { error: "Invalid form data." };
     }
 
+    const heading = normalizeHeading(data.heading);
+
     const skills = (Array.isArray(data.skills) ? data.skills : [])
         .map(normalizeSkillsGroup)
         .filter((g) => g.heading || g.items.length);
@@ -108,5 +135,5 @@ export function parseResumePayload(raw) {
         .map(normalizeEducation)
         .filter((e) => e.school || e.credential || e.points.length);
 
-    return { resume: { skills, experience, education } };
+    return { resume: { heading, skills, experience, education } };
 }

@@ -293,11 +293,19 @@ async function saveSetting(key, value) {
 
 /* ---------- Resume ---------- */
 
-// The resume content ({ skills, experience }). Falls back to the bundled seed
-// JSON when there's no DB or nothing has been saved yet.
+// Ensure a resume object always carries a `heading`. Resumes saved before the
+// header feature existed have no heading key; backfill it from the seed so the
+// print layout and editor always have identity/contact fields to render.
+function withHeading(resume) {
+    if (resume && resume.heading) return resume;
+    return { ...resume, heading: structuredClone(resumeSeed.heading) };
+}
+
+// The resume content ({ heading, skills, experience, education }). Falls back to
+// the bundled seed JSON when there's no DB or nothing has been saved yet.
 export async function getResume() {
     const stored = await getSetting("resume");
-    if (stored && (stored.skills || stored.experience)) return stored;
+    if (stored && (stored.skills || stored.experience)) return withHeading(stored);
     return structuredClone(resumeSeed);
 }
 
