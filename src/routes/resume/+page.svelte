@@ -524,12 +524,18 @@
         gap: 0.5rem 0.75rem;
     }
     .skills__list--tags li {
-        background: var(--bg-deep);
+        /* A lifted surface + accent-tinted border so the pill reads as a pill
+           against the page background even when the theme's deep/page colors
+           sit close together (the slate ramp puts them within a few % of each
+           other, which made a flat fill look like no pill at all). */
+        background: var(--bg-light);
         color: var(--text);
         font-family: var(--font-mono);
-        padding: 0.3rem 0.75rem;
+        padding: 0.3rem 0.85rem;
+        border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
         border-radius: 999px;
         font-size: 0.9rem;
+        box-shadow: 0 2px 6px -3px rgba(0, 0, 0, 0.6);
     }
     .skills__tag {
         display: inline-block;

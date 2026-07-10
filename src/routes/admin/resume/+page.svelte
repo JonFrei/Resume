@@ -659,7 +659,7 @@
     }
     .skills__item { display: flex; align-items: center; gap: 0.4rem; }
     .skills__list--tags { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; }
-    .skills__list--tags .skills__item { background: var(--bg-deep); color: var(--text); padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.9rem; }
+    .skills__list--tags .skills__item { background: var(--bg-light); color: var(--text); padding: 0.3rem 0.85rem; border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); border-radius: 999px; font-size: 0.9rem; box-shadow: 0 2px 6px -3px rgba(0, 0, 0, 0.6); }
     .skills__tagfield { max-width: 10ch; opacity: 0.85; }
     .skills__tag { display: inline-block; padding: 0.1rem 0.6rem; background: var(--accent); color: var(--text-on-accent); border-radius: 999px; font-size: 0.75rem; }
     .item-x, .point-x { flex-shrink: 0; width: 22px; height: 22px; font-size: 0.7rem; }
