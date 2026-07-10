@@ -212,13 +212,12 @@
 </div>
 
 <style>
-    /* Full-bleed: use the whole display width instead of the 1160px
-       .admin-wrap--wide cap, so the header editor + PDF preview get maximum room. */
+    /* 90% of the display width, centered — wide (well past the 1160px
+       .admin-wrap--wide cap) but with side breathing room; matches the sub-tab
+       nav above so the header editor + PDF preview line up under it. */
     .export-page {
-        max-width: none;
+        max-width: 90%;
         padding-bottom: 3rem;
-        padding-left: clamp(0.75rem, 2vw, 1.5rem);
-        padding-right: clamp(0.75rem, 2vw, 1.5rem);
     }
     .editor-hint { color: var(--text-muted); margin: 0.5rem 0 1.25rem; font-size: 0.9rem; }
     .editor-hint a { color: var(--accent); }

@@ -22,14 +22,12 @@
 <slot />
 
 <style>
-    /* Full-bleed: the header + tabs span the whole display area (matching the
-       full-width canvas editors below), instead of the 1160px .admin-wrap--wide
-       cap. Each child page manages its own width below. */
+    /* 90% of the display width, centered — wide but with room to breathe on the
+       sides, instead of the 1160px .admin-wrap--wide cap. Each child page manages
+       its own width below (and matches this 90%). */
     .resume-subnav-wrap {
-        max-width: none;
+        max-width: 90%;
         padding-bottom: 0;
-        padding-left: clamp(0.75rem, 2vw, 1.5rem);
-        padding-right: clamp(0.75rem, 2vw, 1.5rem);
     }
 
     .subtabs {

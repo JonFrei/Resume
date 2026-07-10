@@ -413,13 +413,11 @@
 </div>
 
 <style>
-    /* Full-bleed override: the shared .admin-wrap--wide caps at 1160px and adds
-       side padding — drop both here so the editing canvas can use the whole
-       viewport for an accurate, roomy view of the live layout. */
+    /* 90% of the display width, centered — matches the sub-tab nav above so the
+       editing canvas lines up under it, instead of the 1160px .admin-wrap--wide
+       cap. Wide enough for a roomy view of the live layout, with side breathing room. */
     .resume-editor {
-        max-width: none;
-        padding-left: clamp(0.75rem, 2vw, 1.5rem);
-        padding-right: clamp(0.75rem, 2vw, 1.5rem);
+        max-width: 90%;
     }
 
     .editor-hint { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem; }
