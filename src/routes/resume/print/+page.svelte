@@ -215,7 +215,11 @@
 
     /* ---------- Header ---------- */
     .rhead { text-align: center; margin-bottom: 0.55rem; padding-bottom: 0.55rem; border-bottom: 2px solid #1a1a1a; }
-    .rhead__name { margin: 0; font-size: 21pt; font-weight: 800; letter-spacing: 0.01em; }
+    /* The global base.css `h1..h4` rule sets font-family: var(--font-head),
+       which beats the .sheet inline font by direct-match specificity. Reset the
+       resume's heading elements to inherit so the picked font reaches the name
+       and section titles too. */
+    .rhead__name { margin: 0; font-size: 21pt; font-weight: 800; letter-spacing: 0.01em; font-family: inherit; }
     .rhead__title { margin: 0.1rem 0 0; font-size: 11.5pt; color: #444; font-weight: 600; }
     .rhead__contact { margin: 0.35rem 0 0; font-size: 9.5pt; color: #333; }
     .rhead__contact a { color: #1a1a1a; text-decoration: none; }
@@ -232,6 +236,7 @@
         color: #1a1a1a;
         border-bottom: 1px solid #bbb;
         padding-bottom: 0.1rem;
+        font-family: inherit; /* override the global h1..h4 font (see .rhead__name) */
     }
 
     /* ---------- Skills (compact heading: items rows) ---------- */

@@ -350,7 +350,10 @@
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
     }
     .rhead { text-align: center; margin-bottom: 0.55rem; padding-bottom: 0.55rem; border-bottom: 2px solid #1a1a1a; }
-    .rhead__name { margin: 0; font-size: 21pt; font-weight: 800; letter-spacing: 0.01em; }
+    /* base.css's global `h1..h4 { font-family: var(--font-head) }` beats the
+       .sheet inline font on these heading elements, so reset them to inherit —
+       otherwise the name and section titles ignore the font picker. */
+    .rhead__name { margin: 0; font-size: 21pt; font-weight: 800; letter-spacing: 0.01em; font-family: inherit; }
     .rhead__title { margin: 0.1rem 0 0; font-size: 11.5pt; color: #444; font-weight: 600; }
     .rhead__contact { margin: 0.35rem 0 0; font-size: 9.5pt; color: #333; }
     .rhead__contact .dot { margin: 0 0.4rem; color: #999; }
@@ -359,6 +362,7 @@
         margin: 0 0 0.35rem;
         font-size: 11pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
         color: #1a1a1a; border-bottom: 1px solid #bbb; padding-bottom: 0.1rem;
+        font-family: inherit; /* override global h1..h4 font (see .rhead__name) */
     }
     .skills { display: flex; flex-direction: column; gap: 0.15rem; }
     .skills__row { display: flex; gap: 0.4rem; }
