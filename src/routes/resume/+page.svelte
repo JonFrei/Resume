@@ -2,14 +2,20 @@
     import { onMount } from "svelte";
     import Nav from "$lib/components/Nav.svelte";
     import Footer from "$lib/components/Footer.svelte";
+    import { buildSkillBlocks, subColumnCount } from "$lib/resumeSkills.js";
 
     export let data;
     $: resume = data.resume;
 
     // Section-wide skills layout ("columns" = groups side by side, like a
-    // printed resume; anything else = the default stacked "rows"). Set on the
-    // admin Skills tab.
+    // printed resume; anything else = the default stacked "rows"). The FALLBACK
+    // for groups no band claims. Set on the admin Skills tab.
     $: skillsLayout = resume.skillsLayout === "columns" ? "columns" : "rows";
+
+    // Ordered render blocks: each band (in saved order) as one block, then a
+    // trailing block of leftover groups in the section default. Shared with the
+    // print page + editor preview via buildSkillBlocks so they can't drift.
+    $: skillBlocks = buildSkillBlocks(resume.skills, skillsLayout, resume.skillsBands);
 
     // ---- Build one chronologically-sorted timeline from experience + education.
     // Each experience ROLE becomes its own node (a person can hold two roles at
@@ -166,22 +172,31 @@
         <div class="resume__content" bind:this={contentPane}>
             <section id="skills" class="section">
                 <h2 class="section__title">Skills</h2>
-                <div class="skills skills--{skillsLayout}">
-                    {#each resume.skills as group}
-                        <div class="skills__group">
-                            <h3 class="skills__heading">{group.heading}</h3>
-                            <ul class="skills__list" class:skills__list--tags={group.style === "tags"}>
-                                {#each group.items as item}
-                                    {#if typeof item === "string"}
-                                        <li>{item}</li>
-                                    {:else}
-                                        <li>{item.text} <span class="skills__tag">{item.tag}</span></li>
-                                    {/if}
-                                {/each}
-                            </ul>
-                        </div>
-                    {/each}
-                </div>
+                <!-- One .skills container per render block: each band in saved
+                     order (row / columns), then a trailing block of any groups no
+                     band claims, in the section default layout. -->
+                {#each skillBlocks as block}
+                    <div class="skills skills--{block.layout === 'columns' ? 'columns' : 'rows'}">
+                        {#each block.groups as group}
+                            <div class="skills__group">
+                                <h3 class="skills__heading">{group.heading}</h3>
+                                <ul
+                                    class="skills__list"
+                                    class:skills__list--tags={group.style === "tags"}
+                                    style={block.layout === "columns" ? `--subcols: ${subColumnCount(group.items.length)};` : ""}
+                                >
+                                    {#each group.items as item}
+                                        {#if typeof item === "string"}
+                                            <li>{item}</li>
+                                        {:else}
+                                            <li>{item.text} <span class="skills__tag">{item.tag}</span></li>
+                                        {/if}
+                                    {/each}
+                                </ul>
+                            </div>
+                        {/each}
+                    </div>
+                {/each}
             </section>
 
             <section class="section">
@@ -519,6 +534,8 @@
         flex-direction: column;
         gap: 1.5rem;
     }
+    /* Multiple render blocks (bands) stack with a gap between them. */
+    .skills + .skills { margin-top: 1.25rem; }
     /* Columns layout: skill groups sit side by side (heading over a vertical
        item list), like a printed resume's skills table. auto-fit keeps them
        filling the row and wrapping to fewer columns as the pane narrows. */
@@ -528,11 +545,19 @@
         gap: 1.25rem;
         align-items: start;
     }
-    /* Inside a column, list the items straight down (one per line) instead of
-       the wide auto-fill grid the rows layout uses. */
-    .skills--columns .skills__list {
-        grid-template-columns: 1fr;
-        gap: 0.3rem;
+    /* Inside a column, the item list flows into --subcols sub-columns (set
+       per group: a long list gets 2 to stay short). Equal-height headings keep
+       every column's list starting at the same y even when a heading wraps. */
+    .skills--columns .skills__list:not(.skills__list--tags) {
+        display: block;
+        columns: var(--subcols, 1);
+        column-gap: 1rem;
+    }
+    .skills--columns .skills__list:not(.skills__list--tags) li { break-inside: avoid; }
+    .skills--columns .skills__heading {
+        min-height: 2.8em; /* ~2 lines, so a wrapped heading doesn't shift its list */
+        display: flex;
+        align-items: flex-end;
     }
     .skills__group {
         background: rgba(9, 82, 86, 0.15);

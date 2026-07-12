@@ -50,6 +50,30 @@ function normalizeSkillsGroup(g) {
     return group;
 }
 
+// Named layout bands. Each band groups skill groups (by their index into the
+// filtered skills[] array) and renders them together with one layout. Guard
+// hard against a hand-edited / stale payload: coerce indices to ints, drop any
+// out of range, drop duplicates (an index may live in ONE band only, first
+// wins), drop empty bands, and cap layout to the two known values. `count` is
+// the length of the already-filtered skills array.
+function normalizeSkillsBands(raw, count) {
+    if (!Array.isArray(raw)) return [];
+    const claimed = new Set();
+    const bands = [];
+    for (const b of raw) {
+        const layout = b?.layout === "columns" ? "columns" : "row";
+        const groups = [];
+        for (const g of Array.isArray(b?.groups) ? b.groups : []) {
+            const i = parseInt(g, 10);
+            if (!Number.isInteger(i) || i < 0 || i >= count || claimed.has(i)) continue;
+            claimed.add(i);
+            groups.push(i);
+        }
+        if (groups.length) bands.push({ layout, groups });
+    }
+    return bands;
+}
+
 // Parse a year to an integer, or null. Accepts numbers and strings; a blank
 // or non-numeric value (e.g. "Present") becomes null (open-ended / unknown).
 function toYear(v) {
@@ -153,11 +177,21 @@ export function parseResumeContent(raw) {
 
     // Section-wide skills layout: "columns" lays the groups out side by side
     // (heading over a vertical item list, like a printed resume); anything else
-    // is the default stacked "rows" layout. Kept as one field for the whole
-    // section so the two renderers (live page + print) stay in sync.
+    // is the default stacked "rows" layout. This is the FALLBACK layout for any
+    // group not claimed by a band (below). Kept as one field so the renderers
+    // (live page + print) stay in sync.
     const skillsLayout = data.skillsLayout === "columns" ? "columns" : "rows";
 
-    return { content: { skills, skillsLayout, experience, education } };
+    // Named layout bands: an ordered list of { layout, groups } where `groups`
+    // is a list of indices into the (filtered) skills[] array. Each band renders
+    // its groups together in the band's layout ("row" = one "Heading: a, b, c"
+    // line per group; "columns" = groups side by side). A group index may appear
+    // in at most one band; anything left over renders after the bands in the
+    // section default. Normalized against the FILTERED skills length so a dropped
+    // empty group can't leave a dangling reference. See normalizeSkillsBands.
+    const skillsBands = normalizeSkillsBands(data.skillsBands, skills.length);
+
+    return { content: { skills, skillsLayout, skillsBands, experience, education } };
 }
 
 // Parse just the resume HEADER (identity + contact) from the Export editor
