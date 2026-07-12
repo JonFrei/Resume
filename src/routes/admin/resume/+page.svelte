@@ -179,22 +179,28 @@
     // Skills
     const addGroup = () =>
         (skills = [...skills, { sid: nextKey(), heading: "New group", tags: false, items: [{ text: "", tag: "" }] }]);
-    // Removing a group also drops it from any band (and prunes a band left empty).
+    // Removing a group drops it from any band; a band whose last group was the
+    // one removed is pruned (it can never be re-filled — that group is gone).
     function removeGroup(i) {
         const sid = skills[i]?.sid;
         skills = skills.filter((_, x) => x !== i);
-        if (sid) forgetSid(sid);
+        if (sid) {
+            forgetSid(sid);
+            bands = bands.filter((b) => b.sids.length);
+        }
     }
     const moveGroup = (i, d) => (skills = move(skills, i, d));
     const addItem = (gi) => { skills[gi].items = [...skills[gi].items, { text: "", tag: "" }]; skills = skills; };
     const removeItem = (gi, ii) => { skills[gi].items = skills[gi].items.filter((_, x) => x !== ii); skills = skills; };
 
     // --- Layout bands -----------------------------------------------------
-    // Drop a sid from every band, then remove any band left empty.
+    // Drop a sid from every band. Does NOT prune empty bands: a band the user
+    // just created is legitimately empty until a group is assigned to it, and
+    // assignGroupToBand calls this first — pruning here would delete the target
+    // band mid-assignment. Empty bands are cleaned up only on group removal
+    // (removeGroup) and at serialize time.
     function forgetSid(sid) {
-        bands = bands
-            .map((b) => ({ ...b, sids: b.sids.filter((s) => s !== sid) }))
-            .filter((b) => b.sids.length);
+        bands = bands.map((b) => ({ ...b, sids: b.sids.filter((s) => s !== sid) }));
     }
     // The band a group currently belongs to (index into `bands`), or -1 if it
     // renders in the section default. A sid lives in at most one band.
@@ -476,10 +482,14 @@
                                             <div class="tools tools--float">
                                                 <label class="bandpick" title="Which layout band this group belongs to">
                                                     band
-                                                    <select value={bandIndexOfSid(g.sid)} on:change={(e) => assignGroupToBand(g.sid, Number(e.target.value))}>
-                                                        <option value={-1}>default</option>
+                                                    <!-- One-way select: `selected` is set explicitly per option (keyed on
+                                                         the group's current band) so selection survives the previewBlocks
+                                                         re-render; the change handler coerces the string value back to a
+                                                         number. bandIndexOfSid reads `bands` so this re-evaluates on edits. -->
+                                                    <select on:change={(e) => assignGroupToBand(g.sid, Number(e.currentTarget.value))}>
+                                                        <option value="-1" selected={bandIndexOfSid(g.sid) === -1}>default</option>
                                                         {#each bands as _, bi}
-                                                            <option value={bi}>{bandLabel(bi)}</option>
+                                                            <option value={bi} selected={bandIndexOfSid(g.sid) === bi}>{bandLabel(bi)}</option>
                                                         {/each}
                                                     </select>
                                                 </label>
