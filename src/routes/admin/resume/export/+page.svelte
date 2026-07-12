@@ -2,6 +2,7 @@
     import { enhance } from "$app/forms";
     import { page } from "$app/stores";
     import { RESUME_FONTS, resumeFontStack } from "$lib/resumeFonts.js";
+    import { buildSkillBlocks, subColumnCount } from "$lib/resumeSkills.js";
 
     export let data;
     export let form;
@@ -66,6 +67,11 @@
     $: experience = entries.filter((e) => e.kind === "experience");
     $: education = entries.filter((e) => e.kind === "education");
     $: contactParts = [heading.email, heading.phone, heading.location].filter((x) => x && String(x).trim());
+
+    // Skills preview blocks, mirroring the print page: bands then the leftover
+    // default block. Reflects the layout + bands saved on the Web tab.
+    $: skillsLayout = data.resume.skillsLayout === "columns" ? "columns" : "rows";
+    $: skillBlocks = buildSkillBlocks(data.resume.skills, skillsLayout, data.resume.skillsBands);
 
     let saving = false;
     const submit = () => {
@@ -139,10 +145,13 @@
                     {saving ? "Saving…" : "Save header"}
                 </button>
                 <a class="btn btn-sm" href="{siteBase}/resume/print" target="_blank" rel="noopener">Open printable page ↗</a>
+                <a class="btn btn-sm" href="{siteBase}/resume/print?mode=ats" target="_blank" rel="noopener" title="Linear, parser-safe layout for applicant-tracking systems">Optimize for ATS ↗</a>
             </div>
             <p class="editor-hint editor-hint--sm">
-                “Open printable page” opens the full-size resume; use your browser’s
-                Print → “Save as PDF”. Save the header first so the PDF reflects it.
+                “Open printable page” exports your custom layout. “Optimize for ATS”
+                forces a linear, single-column skills list that applicant-tracking
+                systems parse reliably — use it for online job-portal uploads. Either
+                way, use your browser’s Print → “Save as PDF”, and save the header first.
             </p>
         </form>
 
@@ -171,19 +180,36 @@
                     {#if data.resume.skills?.length}
                         <section class="rsec">
                             <h2 class="rsec__title">Skills</h2>
-                            <div class="skills">
-                                {#each data.resume.skills as group}
-                                    <div class="skills__row">
-                                        <span class="skills__heading">{group.heading}</span>
-                                        <span class="skills__items">
-                                            {#each group.items as item, i}
-                                                {#if i > 0}<span>, </span>{/if}
-                                                {#if typeof item === "string"}{item}{:else}{item.text}{#if item.tag}<span class="skills__tag"> ({item.tag})</span>{/if}{/if}
-                                            {/each}
-                                        </span>
+                            {#each skillBlocks as block}
+                                {#if block.layout === "columns"}
+                                    <div class="skills skills--columns">
+                                        {#each block.groups as group}
+                                            <div class="skills__col">
+                                                <span class="skills__colheading">{group.heading}</span>
+                                                <ul class="skills__collist" style="column-count: {subColumnCount(group.items.length)};">
+                                                    {#each group.items as item}
+                                                        <li>{#if typeof item === "string"}{item}{:else}{item.text}{#if item.tag}<span class="skills__tag"> ({item.tag})</span>{/if}{/if}</li>
+                                                    {/each}
+                                                </ul>
+                                            </div>
+                                        {/each}
                                     </div>
-                                {/each}
-                            </div>
+                                {:else}
+                                    <div class="skills">
+                                        {#each block.groups as group}
+                                            <div class="skills__row">
+                                                <span class="skills__heading">{group.heading}</span>
+                                                <span class="skills__items">
+                                                    {#each group.items as item, i}
+                                                        {#if i > 0}<span>, </span>{/if}
+                                                        {#if typeof item === "string"}{item}{:else}{item.text}{#if item.tag}<span class="skills__tag"> ({item.tag})</span>{/if}{/if}
+                                                    {/each}
+                                                </span>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                {/if}
+                            {/each}
                         </section>
                     {/if}
 
@@ -370,6 +396,22 @@
     .skills__heading::after { content: ":"; }
     .skills__items { flex: 1; }
     .skills__tag { color: #555; }
+    /* Columns preview: mirrors /resume/print (equal-height headings, 2-col flow
+       for long lists). Multiple band blocks stack with a small gap. */
+    .skills--columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(1.3in, 1fr));
+        gap: 0.15rem 0.6rem;
+        align-items: start;
+    }
+    .skills + .skills--columns, .skills--columns + .skills, .skills--columns + .skills--columns { margin-top: 0.3rem; }
+    .skills__col { break-inside: avoid; }
+    .skills__colheading {
+        display: block; font-weight: 700; line-height: 1.2; min-height: 2.4em;
+        border-bottom: 1px solid #ccc; padding-bottom: 0.08rem; margin-bottom: 0.15rem;
+    }
+    .skills__collist { list-style: none; margin: 0; padding: 0; column-gap: 0.6rem; column-fill: balance; }
+    .skills__collist li { margin: 0.04rem 0; break-inside: avoid; }
     .item { margin-top: 0.4rem; break-inside: avoid; }
     .item__head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
     .item__org { font-weight: 700; font-size: 10.5pt; }

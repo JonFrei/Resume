@@ -1,14 +1,31 @@
 <script>
+    import { page } from "$app/stores";
     import { resumeFontStack } from "$lib/resumeFonts.js";
+    import { buildSkillBlocks, subColumnCount } from "$lib/resumeSkills.js";
 
     export let data;
     $: resume = data.resume;
     $: heading = resume.heading || {};
 
+    // ATS mode: /resume/print?mode=ats renders a deliberately LINEAR,
+    // parser-safe skills section — plain "Heading: a, b, c" rows, no columns and
+    // no bands — because applicant-tracking parsers can garble multi-column
+    // layouts. Any custom layout/bands are ignored while this is on. Triggered by
+    // the "Optimize for ATS" button on the admin Export tab.
+    $: atsMode = $page.url.searchParams.get("mode") === "ats";
+
     // Section-wide skills layout ("columns" = groups side by side, one column
     // each with a vertical item list, like the classic printed resume; anything
-    // else = compact "Heading: items" rows). Set on the admin Skills tab.
+    // else = compact "Heading: items" rows). The FALLBACK for groups no band
+    // claims. Set on the admin Skills tab.
     $: skillsLayout = resume.skillsLayout === "columns" ? "columns" : "rows";
+
+    // The ordered render blocks (bands first, then leftover groups in the
+    // section default). ATS mode collapses everything to a single row block so
+    // the whole section is one linear, parser-friendly run.
+    $: skillBlocks = atsMode
+        ? [{ layout: "row", groups: (resume.skills || []).map((g, index) => ({ ...g, index })) }]
+        : buildSkillBlocks(resume.skills, skillsLayout, resume.skillsBands);
 
     // Resolve the header's chosen font to a CSS stack, applied to .sheet so the
     // printed PDF uses the font selected on the admin Export tab.
@@ -106,39 +123,45 @@
     {#if resume.skills?.length}
         <section class="rsec">
             <h2 class="rsec__title">Skills</h2>
-            {#if skillsLayout === "columns"}
-                <!-- Columns: each group is a column — a heading over a vertical
-                     list of its items. Mirrors the classic printed-resume skills
-                     table (Programming Languages | Frameworks | Protocols | …). -->
-                <div class="skills skills--columns">
-                    {#each resume.skills as group}
-                        <div class="skills__col">
-                            <span class="skills__colheading">{group.heading}</span>
-                            <ul class="skills__collist">
-                                {#each group.items as item}
-                                    <li>
+            <!-- One block per band (in saved order), then a trailing block of any
+                 groups no band claims, in the section-default layout. ATS mode
+                 collapses everything into a single "row" block upstream. -->
+            {#each skillBlocks as block}
+                {#if block.layout === "columns"}
+                    <!-- Columns: each group is a column — a heading over a
+                         vertical item list. Equal-height headings keep the item
+                         lists aligned when a heading wraps; a group with many
+                         items flows its list into 2 sub-columns to stay short. -->
+                    <div class="skills skills--columns">
+                        {#each block.groups as group}
+                            <div class="skills__col">
+                                <span class="skills__colheading">{group.heading}</span>
+                                <ul class="skills__collist" style="column-count: {subColumnCount(group.items.length)};">
+                                    {#each group.items as item}
+                                        <li>
+                                            {#if typeof item === "string"}{item}{:else}{item.text}{#if item.tag}<span class="skills__tag"> ({item.tag})</span>{/if}{/if}
+                                        </li>
+                                    {/each}
+                                </ul>
+                            </div>
+                        {/each}
+                    </div>
+                {:else}
+                    <div class="skills">
+                        {#each block.groups as group}
+                            <div class="skills__row">
+                                <span class="skills__heading">{group.heading}</span>
+                                <span class="skills__items">
+                                    {#each group.items as item, i}
+                                        {#if i > 0}<span class="sep">, </span>{/if}
                                         {#if typeof item === "string"}{item}{:else}{item.text}{#if item.tag}<span class="skills__tag"> ({item.tag})</span>{/if}{/if}
-                                    </li>
-                                {/each}
-                            </ul>
-                        </div>
-                    {/each}
-                </div>
-            {:else}
-                <div class="skills">
-                    {#each resume.skills as group}
-                        <div class="skills__row">
-                            <span class="skills__heading">{group.heading}</span>
-                            <span class="skills__items">
-                                {#each group.items as item, i}
-                                    {#if i > 0}<span class="sep">, </span>{/if}
-                                    {#if typeof item === "string"}{item}{:else}{item.text}{#if item.tag}<span class="skills__tag"> ({item.tag})</span>{/if}{/if}
-                                {/each}
-                            </span>
-                        </div>
-                    {/each}
-                </div>
-            {/if}
+                                    {/each}
+                                </span>
+                            </div>
+                        {/each}
+                    </div>
+                {/if}
+            {/each}
         </section>
     {/if}
 
@@ -275,23 +298,41 @@
     /* ---------- Skills (columns: heading over a vertical item list) ----------
        The classic printed-resume table: groups laid out side by side. auto-fit
        fits as many equal columns as the sheet width allows. break-inside:avoid
-       keeps a column from splitting across a page. */
+       keeps a column from splitting across a page. A block may hold just a few
+       groups (a band), so this may render more than once per section. */
     .skills--columns {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(1.3in, 1fr));
         gap: 0.15rem 0.6rem;
         align-items: start;
     }
+    .skills--columns + .skills--columns,
+    .skills + .skills--columns,
+    .skills--columns + .skills { margin-top: 0.3rem; }
     .skills__col { break-inside: avoid; }
+    /* Equal-height headings: reserve two lines so a heading that wraps doesn't
+       push its own item list down out of step with its neighbors'. Every
+       column's list then starts at the same y. line-height must match. */
     .skills__colheading {
         display: block;
         font-weight: 700;
+        line-height: 1.2;
+        min-height: 2.4em; /* 2 lines at line-height 1.2 */
         border-bottom: 1px solid #ccc;
         padding-bottom: 0.08rem;
         margin-bottom: 0.15rem;
     }
-    .skills__collist { list-style: none; margin: 0; padding: 0; }
-    .skills__collist li { margin: 0.04rem 0; }
+    /* Vertical item list. `column-count` (set inline per group) flows a long
+       list into 2 sub-columns to keep a tall group short. list-style stays off;
+       balance the sub-columns so they're roughly even. */
+    .skills__collist {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        column-gap: 0.6rem;
+        column-fill: balance;
+    }
+    .skills__collist li { margin: 0.04rem 0; break-inside: avoid; }
 
     /* ---------- Experience / Education items ---------- */
     .item { margin-top: 0.4rem; break-inside: avoid; }

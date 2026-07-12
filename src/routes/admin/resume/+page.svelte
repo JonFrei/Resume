@@ -31,21 +31,40 @@
         return { text: String(it), tag: "" };
     }
 
+    // A monotonically increasing key generator (kept off Date/Math.random so
+    // it's deterministic within a session). Used for both experience group ids
+    // and stable per-skill-group ids that bands reference.
+    let seq = 0;
+    const nextKey = () => `k${seq++}`;
+
+    // Each skill group carries a stable client id (`sid`) so layout bands can
+    // reference groups by identity across add / remove / reorder — indices would
+    // shift out from under the bands. On save we map sids → current indices.
     let skills = (data.resume.skills || []).map((g) => ({
+        sid: nextKey(),
         heading: g.heading || "",
         tags: g.style === "tags",
         items: (g.items || []).map(toItem),
     }));
 
     // Section-wide skills layout: "rows" (stacked groups, default) or "columns"
-    // (groups side by side, like a printed resume). Drives both the preview
-    // below and the saved payload; the live page + print read the same field.
+    // (groups side by side, like a printed resume). This is the FALLBACK layout
+    // for any group not placed in a band. Drives the preview + saved payload.
     let skillsLayout = data.resume.skillsLayout === "columns" ? "columns" : "rows";
 
-    // A monotonically increasing key generator for new group ids (kept off
-    // Date/Math.random so it's deterministic within a session).
-    let seq = 0;
-    const nextKey = () => `k${seq++}`;
+    // Layout BANDS: ordered groupings that render together in one layout, letting
+    // you mix (e.g. "Languages" as a row, three technical groups as columns) in
+    // one section. Each band = { layout: "row"|"columns", sids: [stable ids] }.
+    // Loaded from the saved index-based bands by mapping saved indices → the sid
+    // of the group at that index. Groups in no band render in the section default.
+    let bands = (Array.isArray(data.resume.skillsBands) ? data.resume.skillsBands : [])
+        .map((b) => ({
+            layout: b?.layout === "columns" ? "columns" : "row",
+            sids: (Array.isArray(b?.groups) ? b.groups : [])
+                .map((i) => skills[i]?.sid)
+                .filter(Boolean),
+        }))
+        .filter((b) => b.sids.length);
 
     // Flatten experience -> per-role entries, education -> entries; then merge.
     let entries = buildEntries(data.resume);
@@ -159,11 +178,41 @@
 
     // Skills
     const addGroup = () =>
-        (skills = [...skills, { heading: "New group", tags: false, items: [{ text: "", tag: "" }] }]);
-    const removeGroup = (i) => (skills = skills.filter((_, x) => x !== i));
+        (skills = [...skills, { sid: nextKey(), heading: "New group", tags: false, items: [{ text: "", tag: "" }] }]);
+    // Removing a group also drops it from any band (and prunes a band left empty).
+    function removeGroup(i) {
+        const sid = skills[i]?.sid;
+        skills = skills.filter((_, x) => x !== i);
+        if (sid) forgetSid(sid);
+    }
     const moveGroup = (i, d) => (skills = move(skills, i, d));
     const addItem = (gi) => { skills[gi].items = [...skills[gi].items, { text: "", tag: "" }]; skills = skills; };
     const removeItem = (gi, ii) => { skills[gi].items = skills[gi].items.filter((_, x) => x !== ii); skills = skills; };
+
+    // --- Layout bands -----------------------------------------------------
+    // Drop a sid from every band, then remove any band left empty.
+    function forgetSid(sid) {
+        bands = bands
+            .map((b) => ({ ...b, sids: b.sids.filter((s) => s !== sid) }))
+            .filter((b) => b.sids.length);
+    }
+    // The band a group currently belongs to (index into `bands`), or -1 if it
+    // renders in the section default. A sid lives in at most one band.
+    const bandIndexOfSid = (sid) => bands.findIndex((b) => b.sids.includes(sid));
+    // A friendly label for a band (its 1-based number + layout) for the picker.
+    const bandLabel = (bi) => `Band ${bi + 1} · ${bands[bi].layout === "columns" ? "Columns" : "Row"}`;
+
+    const addBand = (layout = "columns") => (bands = [...bands, { layout, sids: [] }]);
+    const removeBand = (bi) => (bands = bands.filter((_, x) => x !== bi));
+    const setBandLayout = (bi, layout) => { bands[bi].layout = layout; bands = bands; };
+    const moveBand = (bi, d) => (bands = move(bands, bi, d));
+
+    // Move a group to a target band (bi), or to the section default (bi === -1).
+    // Pulls it out of whatever band it was in first so it lives in one place.
+    function assignGroupToBand(sid, bi) {
+        forgetSid(sid);
+        if (bi >= 0 && bands[bi]) { bands[bi].sids = [...bands[bi].sids, sid]; bands = bands; }
+    }
 
     // Timeline entries
     const newExperience = () => ({
@@ -192,10 +241,42 @@
     const addPoint = (node) => { node.points = [...node.points, ""]; entries = entries; };
     const removePoint = (node, pi) => { node.points = node.points.filter((_, x) => x !== pi); entries = entries; };
 
+    // --- Preview render blocks (mirror the live page's buildSkillBlocks, but
+    // keyed on the editor's stable sids instead of indices). Each band becomes
+    // one block in order; groups in no band form a trailing block in the section
+    // default layout. Recomputed on any skills/bands/layout edit via `rev`. ---
+    $: previewBlocks = (rev, bands, skillsLayout, buildPreviewBlocks(skills, bands, skillsLayout));
+
+    function buildPreviewBlocks(sk, bnds, deflt) {
+        const bySid = new Map(sk.map((g) => [g.sid, g]));
+        const claimed = new Set();
+        const blocks = [];
+        for (const b of bnds) {
+            const groups = [];
+            for (const sid of b.sids) {
+                const g = bySid.get(sid);
+                if (g && !claimed.has(sid)) { claimed.add(sid); groups.push(g); }
+            }
+            if (groups.length) blocks.push({ layout: b.layout === "columns" ? "columns" : "row", groups });
+        }
+        const leftover = sk.filter((g) => !claimed.has(g.sid));
+        if (leftover.length) blocks.push({ layout: deflt === "columns" ? "columns" : "row", groups: leftover });
+        return blocks;
+    }
+
+    // Items past this count in a column group flow into a 2nd sub-column so the
+    // group is shorter. Matches SUBCOLUMN_THRESHOLD in resumeSkills.js.
+    const subCols = (n) => (n > 6 ? 2 : 1);
+
+    // Current index of a group object in `skills` — the preview iterates blocks
+    // (group objects), but the move/remove/add-item mutations key on `skills`
+    // indices. Read `rev`/`skills` so it re-resolves after any reorder.
+    $: idxOf = (rev, skills, (g) => skills.indexOf(g));
+
     // --- Serialize back to the grouped payload parseResumePayload expects. ---
     const slugify = (s) => String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-    $: payload = (rev, skillsLayout, JSON.stringify(buildPayload(skills, entries)));
+    $: payload = (rev, skillsLayout, bands, JSON.stringify(buildPayload(skills, entries)));
 
     function buildPayload(sk, ents) {
         const experienceGroups = [];
@@ -236,14 +317,29 @@
             });
         }
 
+        // The parser drops empty groups (no heading AND no items), which shifts
+        // indices. Serialize bands against that SAME filtered set: keep only
+        // groups that survive, remember each survivor's sid → final index, then
+        // translate each band's sids to those indices. This keeps the saved
+        // index-based bands aligned with the saved skills array.
+        const kept = sk.filter((g) => g.heading.trim() || g.items.some((it) => it.text.trim()));
+        const indexOfSid = new Map(kept.map((g, i) => [g.sid, i]));
+        const skillsBands = bands
+            .map((b) => ({
+                layout: b.layout === "columns" ? "columns" : "row",
+                groups: b.sids.map((s) => indexOfSid.get(s)).filter((i) => i != null),
+            }))
+            .filter((b) => b.groups.length);
+
         return {
-            skills: sk.map((g) => ({
+            skills: kept.map((g) => ({
                 heading: g.heading,
                 style: g.tags ? "tags" : undefined,
                 items: g.items.filter((it) => it.text.trim())
                     .map((it) => (it.tag.trim() ? { text: it.text, tag: it.tag } : it.text)),
             })),
             skillsLayout,
+            skillsBands,
             experience: experienceGroups,
             education,
         };
@@ -324,44 +420,90 @@
                             </div>
                             <h2 class="section__title">Skills</h2>
 
-                            <!-- Section-wide layout switch: Rows (stacked groups)
-                                 vs Columns (groups side by side, like the printed
-                                 resume). Drives the preview + the saved payload. -->
-                            <div class="layout-switch">
-                                <span class="layout-switch__label">Layout</span>
-                                <label class:on={skillsLayout === "rows"}>
-                                    <input type="radio" bind:group={skillsLayout} value="rows" /> Rows
-                                </label>
-                                <label class:on={skillsLayout === "columns"}>
-                                    <input type="radio" bind:group={skillsLayout} value="columns" /> Columns
-                                </label>
-                                <span class="layout-switch__hint">Columns puts each group side by side, like a printed resume.</span>
-                            </div>
+                            <!-- Layout controls: the section DEFAULT (fallback for
+                                 groups in no band) + the band manager. Bands let
+                                 you mix layouts — e.g. one row + a set of columns. -->
+                            <div class="layout-controls">
+                                <div class="layout-switch">
+                                    <span class="layout-switch__label">Default layout</span>
+                                    <label class:on={skillsLayout === "rows"}>
+                                        <input type="radio" bind:group={skillsLayout} value="rows" /> Rows
+                                    </label>
+                                    <label class:on={skillsLayout === "columns"}>
+                                        <input type="radio" bind:group={skillsLayout} value="columns" /> Columns
+                                    </label>
+                                    <span class="layout-switch__hint">Applies to any group not placed in a band below.</span>
+                                </div>
 
-                            <div class="skills skills--{skillsLayout}">
-                                {#each skills as g, gi (gi)}
-                                    <div class="skills__group editable">
-                                        <div class="tools tools--float">
-                                            <label class="tagtoggle" title="Show items as pills"><input type="checkbox" bind:checked={g.tags} /> pills</label>
-                                            <button class="iconbtn" type="button" title="Move up" on:click={() => moveGroup(gi, -1)} disabled={gi === 0}>↑</button>
-                                            <button class="iconbtn" type="button" title="Move down" on:click={() => moveGroup(gi, 1)} disabled={gi === skills.length - 1}>↓</button>
-                                            <button class="iconbtn iconbtn--danger" type="button" title="Remove group" on:click={() => removeGroup(gi)}>✕</button>
-                                        </div>
-                                        <h3 class="skills__heading"><input class="ce" bind:value={g.heading} placeholder="Group heading" /></h3>
-                                        <ul class="skills__list" class:skills__list--tags={g.tags}>
-                                            {#each g.items as it, ii (ii)}
-                                                <li class="skills__item editable">
-                                                    <input class="ce ce--inline" bind:value={it.text} placeholder="Skill" />
-                                                    {#if !g.tags}<input class="ce ce--inline skills__tagfield" bind:value={it.tag} placeholder="tag (opt)" />{/if}
-                                                    {#if it.tag && !g.tags}<span class="skills__tag">{it.tag}</span>{/if}
-                                                    <button class="iconbtn iconbtn--danger item-x" type="button" title="Remove item" on:click={() => removeItem(gi, ii)}>✕</button>
+                                <div class="bands">
+                                    <div class="bands__head">
+                                        <span class="layout-switch__label">Layout bands</span>
+                                        <button class="add-inline" type="button" on:click={() => addBand("columns")}>＋ Columns band</button>
+                                        <button class="add-inline" type="button" on:click={() => addBand("row")}>＋ Row band</button>
+                                    </div>
+                                    {#if bands.length}
+                                        <ul class="bands__list">
+                                            {#each bands as b, bi (bi)}
+                                                <li class="band">
+                                                    <span class="band__name">Band {bi + 1}</span>
+                                                    <label class="band__layout">
+                                                        <select bind:value={b.layout} on:change={() => (bands = bands)}>
+                                                            <option value="columns">Columns</option>
+                                                            <option value="row">Row</option>
+                                                        </select>
+                                                    </label>
+                                                    <span class="band__count">{b.sids.length} group{b.sids.length === 1 ? "" : "s"}</span>
+                                                    <button class="iconbtn" type="button" title="Move band up" on:click={() => moveBand(bi, -1)} disabled={bi === 0}>↑</button>
+                                                    <button class="iconbtn" type="button" title="Move band down" on:click={() => moveBand(bi, 1)} disabled={bi === bands.length - 1}>↓</button>
+                                                    <button class="iconbtn iconbtn--danger" type="button" title="Delete band (its groups return to the default)" on:click={() => removeBand(bi)}>✕</button>
                                                 </li>
                                             {/each}
                                         </ul>
-                                        <button class="add-inline" type="button" on:click={() => addItem(gi)}>＋ item</button>
-                                    </div>
-                                {/each}
+                                    {:else}
+                                        <p class="bands__empty">No bands yet — every group uses the default layout. Add a band, then assign groups to it from the “Band” picker on each group.</p>
+                                    {/if}
+                                </div>
                             </div>
+
+                            <!-- Preview: rendered block-by-block exactly like the
+                                 live page. Each block is a band (or the trailing
+                                 default block); each group keeps inline editing +
+                                 a Band picker to move it between blocks. -->
+                            {#each previewBlocks as block}
+                                <div class="skills skills--{block.layout === 'columns' ? 'columns' : 'rows'}">
+                                    {#each block.groups as g (g.sid)}
+                                        <div class="skills__group editable" style={block.layout === "columns" ? `--subcols:${subCols(g.items.length)};` : ""}>
+                                            <div class="tools tools--float">
+                                                <label class="bandpick" title="Which layout band this group belongs to">
+                                                    band
+                                                    <select value={bandIndexOfSid(g.sid)} on:change={(e) => assignGroupToBand(g.sid, Number(e.target.value))}>
+                                                        <option value={-1}>default</option>
+                                                        {#each bands as _, bi}
+                                                            <option value={bi}>{bandLabel(bi)}</option>
+                                                        {/each}
+                                                    </select>
+                                                </label>
+                                                <label class="tagtoggle" title="Show items as pills"><input type="checkbox" bind:checked={g.tags} /> pills</label>
+                                                <button class="iconbtn" type="button" title="Move up" on:click={() => moveGroup(idxOf(g), -1)} disabled={idxOf(g) === 0}>↑</button>
+                                                <button class="iconbtn" type="button" title="Move down" on:click={() => moveGroup(idxOf(g), 1)} disabled={idxOf(g) === skills.length - 1}>↓</button>
+                                                <button class="iconbtn iconbtn--danger" type="button" title="Remove group" on:click={() => removeGroup(idxOf(g))}>✕</button>
+                                            </div>
+                                            <h3 class="skills__heading"><input class="ce" bind:value={g.heading} placeholder="Group heading" /></h3>
+                                            <ul class="skills__list" class:skills__list--tags={g.tags}>
+                                                {#each g.items as it, ii (ii)}
+                                                    <li class="skills__item editable">
+                                                        <input class="ce ce--inline" bind:value={it.text} placeholder="Skill" />
+                                                        {#if !g.tags}<input class="ce ce--inline skills__tagfield" bind:value={it.tag} placeholder="tag (opt)" />{/if}
+                                                        {#if it.tag && !g.tags}<span class="skills__tag">{it.tag}</span>{/if}
+                                                        <button class="iconbtn iconbtn--danger item-x" type="button" title="Remove item" on:click={() => removeItem(idxOf(g), ii)}>✕</button>
+                                                    </li>
+                                                {/each}
+                                            </ul>
+                                            <button class="add-inline" type="button" on:click={() => addItem(idxOf(g))}>＋ item</button>
+                                        </div>
+                                    {/each}
+                                </div>
+                            {/each}
                             <div class="section__add"><button class="add-inline" type="button" on:click={addGroup}>＋ Add skill group</button></div>
                         </section>
 
@@ -661,6 +803,7 @@
     .entry-add { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
     .skills { display: flex; flex-direction: column; gap: 1.5rem; }
+    .skills + .skills { margin-top: 1.25rem; } /* stack multiple band blocks */
     /* Columns preview: mirror the live page — groups side by side, each with a
        vertical item list. auto-fit wraps to fewer columns as the canvas narrows. */
     .skills--columns {
@@ -669,16 +812,35 @@
         gap: 1.25rem;
         align-items: start;
     }
-    .skills--columns .skills__list { grid-template-columns: 1fr; gap: 0.3rem; }
+    /* Item list flows into --subcols sub-columns (set per group) so a long list
+       stays short; equal-height headings keep lists aligned when a heading wraps.
+       Tag/pill lists keep wrapping as pills (not multi-column). */
+    .skills--columns .skills__list:not(.skills__list--tags) {
+        display: block;
+        columns: var(--subcols, 1);
+        column-gap: 1rem;
+    }
+    .skills--columns .skills__list:not(.skills__list--tags) .skills__item { break-inside: avoid; }
+    .skills--columns .skills__heading { min-height: 2.8em; display: flex; align-items: flex-end; }
     .skills__group { background: rgba(9, 82, 86, 0.15); border-radius: var(--radius); padding: 1rem 1.25rem; }
 
-    /* Rows / Columns layout switch above the skill groups. */
+    /* Layout controls: default switch + band manager, stacked in a panel. */
+    .layout-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        margin-bottom: 1.5rem;
+        padding: 1rem 1.1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--radius);
+    }
+    /* Rows / Columns layout switch. */
     .layout-switch {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         gap: 0.5rem;
-        margin-bottom: 1.25rem;
     }
     .layout-switch__label {
         font-size: 0.72rem;
@@ -706,6 +868,45 @@
     }
     .layout-switch label input { accent-color: var(--accent); }
     .layout-switch__hint { font-size: 0.72rem; color: var(--text-muted); }
+
+    /* Band manager. */
+    .bands { display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 0.75rem; }
+    .bands__head { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; }
+    .bands__empty { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
+    .bands__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+    .band {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.5rem;
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: var(--radius);
+    }
+    .band__name { font-size: 0.8rem; font-weight: 700; color: var(--text); }
+    .band__count { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; }
+    .band__layout select,
+    .bandpick select {
+        background: rgba(0, 0, 0, 0.4);
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        padding: 0.15rem 0.35rem;
+        font-size: 0.78rem;
+    }
+    .band__layout select option,
+    .bandpick select option { color: #1a1a1a; background: #fff; }
+    /* Per-group band picker sits in the floating tools row. */
+    .bandpick {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
     .skills__heading {
         font-size: 1.15rem;
         color: var(--bg-deep);
