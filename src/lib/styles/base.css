@@ -334,13 +334,28 @@ h1, h2, h3, h4 {
         border-bottom: var(--border-w) solid var(--accent);
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 
-        /* Hidden state: slide up out of view */
+        /* Hidden state: slide up out of view.
+           A transform only moves the menu VISUALLY — as a position:fixed box it
+           stays in the hit-test layer and keeps eating pointer events over the
+           page beneath it, which reads as the nav "locking up" (you tap a page
+           button and the invisible closed menu swallows the click). So the
+           closed menu must also be taken out of hit-testing: visibility:hidden
+           + pointer-events:none. visibility (not display) keeps the slide
+           transition. visibility is transitioned with a delay so it flips only
+           after the slide-out finishes. */
         transform: translateY(-120%);
-        transition: transform var(--speed) var(--ease);
+        visibility: hidden;
+        pointer-events: none;
+        transition: transform var(--speed) var(--ease),
+                    visibility 0s linear var(--speed);
     }
 
     .nav__menu.is-open {
         transform: translateY(0);
+        visibility: visible;
+        pointer-events: auto;
+        transition: transform var(--speed) var(--ease),
+                    visibility 0s linear 0s;
     }
 
     .nav__menu li {
