@@ -5,6 +5,11 @@
     $: resume = data.resume;
     $: heading = resume.heading || {};
 
+    // Section-wide skills layout ("columns" = groups side by side, one column
+    // each with a vertical item list, like the classic printed resume; anything
+    // else = compact "Heading: items" rows). Set on the admin Skills tab.
+    $: skillsLayout = resume.skillsLayout === "columns" ? "columns" : "rows";
+
     // Resolve the header's chosen font to a CSS stack, applied to .sheet so the
     // printed PDF uses the font selected on the admin Export tab.
     $: fontStack = resumeFontStack(heading.font);
@@ -101,19 +106,39 @@
     {#if resume.skills?.length}
         <section class="rsec">
             <h2 class="rsec__title">Skills</h2>
-            <div class="skills">
-                {#each resume.skills as group}
-                    <div class="skills__row">
-                        <span class="skills__heading">{group.heading}</span>
-                        <span class="skills__items">
-                            {#each group.items as item, i}
-                                {#if i > 0}<span class="sep">, </span>{/if}
-                                {#if typeof item === "string"}{item}{:else}{item.text}{#if item.tag}<span class="skills__tag"> ({item.tag})</span>{/if}{/if}
-                            {/each}
-                        </span>
-                    </div>
-                {/each}
-            </div>
+            {#if skillsLayout === "columns"}
+                <!-- Columns: each group is a column — a heading over a vertical
+                     list of its items. Mirrors the classic printed-resume skills
+                     table (Programming Languages | Frameworks | Protocols | …). -->
+                <div class="skills skills--columns">
+                    {#each resume.skills as group}
+                        <div class="skills__col">
+                            <span class="skills__colheading">{group.heading}</span>
+                            <ul class="skills__collist">
+                                {#each group.items as item}
+                                    <li>
+                                        {#if typeof item === "string"}{item}{:else}{item.text}{#if item.tag}<span class="skills__tag"> ({item.tag})</span>{/if}{/if}
+                                    </li>
+                                {/each}
+                            </ul>
+                        </div>
+                    {/each}
+                </div>
+            {:else}
+                <div class="skills">
+                    {#each resume.skills as group}
+                        <div class="skills__row">
+                            <span class="skills__heading">{group.heading}</span>
+                            <span class="skills__items">
+                                {#each group.items as item, i}
+                                    {#if i > 0}<span class="sep">, </span>{/if}
+                                    {#if typeof item === "string"}{item}{:else}{item.text}{#if item.tag}<span class="skills__tag"> ({item.tag})</span>{/if}{/if}
+                                {/each}
+                            </span>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
         </section>
     {/if}
 
@@ -246,6 +271,27 @@
     .skills__heading::after { content: ":"; }
     .skills__items { flex: 1; }
     .skills__tag { color: #555; }
+
+    /* ---------- Skills (columns: heading over a vertical item list) ----------
+       The classic printed-resume table: groups laid out side by side. auto-fit
+       fits as many equal columns as the sheet width allows. break-inside:avoid
+       keeps a column from splitting across a page. */
+    .skills--columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(1.3in, 1fr));
+        gap: 0.15rem 0.6rem;
+        align-items: start;
+    }
+    .skills__col { break-inside: avoid; }
+    .skills__colheading {
+        display: block;
+        font-weight: 700;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 0.08rem;
+        margin-bottom: 0.15rem;
+    }
+    .skills__collist { list-style: none; margin: 0; padding: 0; }
+    .skills__collist li { margin: 0.04rem 0; }
 
     /* ---------- Experience / Education items ---------- */
     .item { margin-top: 0.4rem; break-inside: avoid; }
