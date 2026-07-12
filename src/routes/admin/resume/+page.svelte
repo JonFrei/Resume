@@ -37,6 +37,11 @@
         items: (g.items || []).map(toItem),
     }));
 
+    // Section-wide skills layout: "rows" (stacked groups, default) or "columns"
+    // (groups side by side, like a printed resume). Drives both the preview
+    // below and the saved payload; the live page + print read the same field.
+    let skillsLayout = data.resume.skillsLayout === "columns" ? "columns" : "rows";
+
     // A monotonically increasing key generator for new group ids (kept off
     // Date/Math.random so it's deterministic within a session).
     let seq = 0;
@@ -190,7 +195,7 @@
     // --- Serialize back to the grouped payload parseResumePayload expects. ---
     const slugify = (s) => String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-    $: payload = (rev, JSON.stringify(buildPayload(skills, entries)));
+    $: payload = (rev, skillsLayout, JSON.stringify(buildPayload(skills, entries)));
 
     function buildPayload(sk, ents) {
         const experienceGroups = [];
@@ -238,6 +243,7 @@
                 items: g.items.filter((it) => it.text.trim())
                     .map((it) => (it.tag.trim() ? { text: it.text, tag: it.tag } : it.text)),
             })),
+            skillsLayout,
             experience: experienceGroups,
             education,
         };
@@ -317,7 +323,22 @@
                                 <button class="iconbtn" type="button" title="Add skill group" on:click={addGroup}>＋</button>
                             </div>
                             <h2 class="section__title">Skills</h2>
-                            <div class="skills">
+
+                            <!-- Section-wide layout switch: Rows (stacked groups)
+                                 vs Columns (groups side by side, like the printed
+                                 resume). Drives the preview + the saved payload. -->
+                            <div class="layout-switch">
+                                <span class="layout-switch__label">Layout</span>
+                                <label class:on={skillsLayout === "rows"}>
+                                    <input type="radio" bind:group={skillsLayout} value="rows" /> Rows
+                                </label>
+                                <label class:on={skillsLayout === "columns"}>
+                                    <input type="radio" bind:group={skillsLayout} value="columns" /> Columns
+                                </label>
+                                <span class="layout-switch__hint">Columns puts each group side by side, like a printed resume.</span>
+                            </div>
+
+                            <div class="skills skills--{skillsLayout}">
                                 {#each skills as g, gi (gi)}
                                     <div class="skills__group editable">
                                         <div class="tools tools--float">
@@ -640,7 +661,51 @@
     .entry-add { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
     .skills { display: flex; flex-direction: column; gap: 1.5rem; }
+    /* Columns preview: mirror the live page — groups side by side, each with a
+       vertical item list. auto-fit wraps to fewer columns as the canvas narrows. */
+    .skills--columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1.25rem;
+        align-items: start;
+    }
+    .skills--columns .skills__list { grid-template-columns: 1fr; gap: 0.3rem; }
     .skills__group { background: rgba(9, 82, 86, 0.15); border-radius: var(--radius); padding: 1rem 1.25rem; }
+
+    /* Rows / Columns layout switch above the skill groups. */
+    .layout-switch {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+    }
+    .layout-switch__label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+    .layout-switch label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+        padding: 0.25rem 0.7rem;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 999px;
+        cursor: pointer;
+    }
+    .layout-switch label.on {
+        background: var(--accent);
+        color: var(--text-on-accent);
+        border-color: var(--accent);
+    }
+    .layout-switch label input { accent-color: var(--accent); }
+    .layout-switch__hint { font-size: 0.72rem; color: var(--text-muted); }
     .skills__heading {
         font-size: 1.15rem;
         color: var(--bg-deep);

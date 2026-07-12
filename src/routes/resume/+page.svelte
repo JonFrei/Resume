@@ -6,6 +6,11 @@
     export let data;
     $: resume = data.resume;
 
+    // Section-wide skills layout ("columns" = groups side by side, like a
+    // printed resume; anything else = the default stacked "rows"). Set on the
+    // admin Skills tab.
+    $: skillsLayout = resume.skillsLayout === "columns" ? "columns" : "rows";
+
     // ---- Build one chronologically-sorted timeline from experience + education.
     // Each experience ROLE becomes its own node (a person can hold two roles at
     // one company); each education entry is a node. Nodes are merged and sorted
@@ -72,6 +77,20 @@
     let contentPane; // the scrollable right pane (bound in markup)
     $: if (!activeId && nodes.length) activeId = nodes[0].id;
 
+    // Jump to an in-page section (#skills / #<node-id>) WITHOUT letting the
+    // fragment reach the URL. See Nav.svelte for the full "why": on /resume the
+    // page root is height:100vh; overflow:hidden and the real scroll lives in a
+    // nested overflow:auto pane. A fragment in the URL makes SvelteKit's hash-nav
+    // try to scroll the (unscrollable) document; it thrashes history and the
+    // router locks up on the NEXT navigation — the page appears frozen with no
+    // console error. scrollIntoView walks up to whichever ancestor actually
+    // scrolls, so we bypass the router entirely and never dirty the URL.
+    function onJump(e, id) {
+        e.preventDefault();
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     onMount(() => {
         const sections = nodes
             .map((n) => document.getElementById(n.id))
@@ -111,7 +130,7 @@
         <!-- ========================= LEFT: TIMELINE NAV ========================= -->
         <nav class="tl" aria-label="Resume timeline">
             <div class="tl__inner">
-                <a class="tl__skills" href="#skills">
+                <a class="tl__skills" href="#skills" on:click={(e) => onJump(e, "skills")}>
                     Skills <span aria-hidden="true">↥</span>
                 </a>
 
@@ -126,6 +145,7 @@
                                     class="tlnode__card"
                                     href={`#${n.id}`}
                                     aria-current={activeId === n.id ? "true" : undefined}
+                                    on:click={(e) => onJump(e, n.id)}
                                 >
                                     <span class="tlnode__kind">{n.kind === "education" ? "Education" : "Experience"}</span>
                                     <span class="tlnode__title">{n.title}</span>
@@ -146,7 +166,7 @@
         <div class="resume__content" bind:this={contentPane}>
             <section id="skills" class="section">
                 <h2 class="section__title">Skills</h2>
-                <div class="skills">
+                <div class="skills skills--{skillsLayout}">
                     {#each resume.skills as group}
                         <div class="skills__group">
                             <h3 class="skills__heading">{group.heading}</h3>
@@ -498,6 +518,21 @@
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
+    }
+    /* Columns layout: skill groups sit side by side (heading over a vertical
+       item list), like a printed resume's skills table. auto-fit keeps them
+       filling the row and wrapping to fewer columns as the pane narrows. */
+    .skills--columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1.25rem;
+        align-items: start;
+    }
+    /* Inside a column, list the items straight down (one per line) instead of
+       the wide auto-fill grid the rows layout uses. */
+    .skills--columns .skills__list {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
     }
     .skills__group {
         background: rgba(9, 82, 86, 0.15);

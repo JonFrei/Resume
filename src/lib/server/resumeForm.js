@@ -151,7 +151,13 @@ export function parseResumeContent(raw) {
         .map(normalizeEducation)
         .filter((e) => e.school || e.credential || e.points.length);
 
-    return { content: { skills, experience, education } };
+    // Section-wide skills layout: "columns" lays the groups out side by side
+    // (heading over a vertical item list, like a printed resume); anything else
+    // is the default stacked "rows" layout. Kept as one field for the whole
+    // section so the two renderers (live page + print) stay in sync.
+    const skillsLayout = data.skillsLayout === "columns" ? "columns" : "rows";
+
+    return { content: { skills, skillsLayout, experience, education } };
 }
 
 // Parse just the resume HEADER (identity + contact) from the Export editor
